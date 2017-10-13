@@ -1,8 +1,13 @@
-#School-To-Home Behavior Tracking
+# School-To-Home Behavior Tracking
 
 <b>Description:</b><br />
 
-School-To-Home Behavior Tracking is a Windows desktop application for teachers and parents. Teachers and parents use the application to track the behavior of students exhibiting severe and/or prolonged behavior problems in the classroom. The teacher tracks the student's behavior at school using behavior tracking forms. The teacher may use the pre-made forms or create custom behavior tracking forms specific to the student's behavior. Teachers may also complete incident reports and intervention forms to further track the student. A progress report form is also available for the teacher to complete and send to the parent to inform the parent about their child's day. The parent may complete a home behavior tracking form to track how their child behaved at home. The parent may choose to send the home behavior tracking form to the teacher so the teacher will have information about the child's behavior both while at school and at home. The teacher and parent may graph data from the tracking forms to identify patterns in the child's behavior. The goal of School-To-Home Behavior Tracking is to finding the possible causes of student misbehavior and to help parents and teachers communicate to facilitate student success.
+  School-To-Home Behavior Tracking is a Windows desktop application for teachers and parents. Teachers and parents use the application to track the behavior of students exhibiting severe and/or prolonged behavior problems in the classroom. 
+<br /><br />
+The teacher tracks the student's behavior at school using behavior tracking forms. The teacher may use the pre-made forms or create custom behavior tracking forms specific to the student's behavior. Teachers may also complete incident reports and intervention forms to further track the student. A progress report form is also available for the teacher to complete and send to the parent to inform the parent about their child's day. 
+<br /><br />
+The parent may complete a home behavior tracking form to track how their child behaved at home. The parent may choose to send the home behavior tracking form to the teacher so the teacher will have information about the child's behavior both while at school and at home. <br /><br />
+The teacher and parent may graph data from the tracking forms to identify patterns in the child's behavior. The goal of School-To-Home Behavior Tracking is to help find the possible causes of student misbehavior and to help parents and teachers better communicate to facilitate student success.
 
 <b>Contributor:</b><br />
 [Stephanie Derosier-Vetter](https://github.com/stephanievetter)<br />
