@@ -17,5 +17,6 @@ namespace SchoolToHomeBehaviorTracking_Server
         public int AdminID { get; set; }
         public int UserID { get; set; }
         public Nullable<System.DateTime> LastAccess { get; set; }
+        public Nullable<System.DateTime> LastAccess2 { get; set; }
     }
 }

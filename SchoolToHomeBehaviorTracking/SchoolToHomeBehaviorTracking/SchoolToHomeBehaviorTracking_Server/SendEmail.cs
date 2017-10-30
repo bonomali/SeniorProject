@@ -20,7 +20,7 @@ namespace SchoolToHomeBehaviorTracking_Server
 
                 mail.From = new MailAddress("schooltohome.behaviortracking@gmail.com", "School-To-Home");
                 mail.To.Add(email);
-                mail.Subject = "Home-To-School Behavior Tracking Password Reset";
+                mail.Subject = "School-To-Home Behavior Tracking Password Reset";
                 mail.Body = "Use access code: " + accessCode + " to reset password";
 
                 SmtpServer.Send(mail);

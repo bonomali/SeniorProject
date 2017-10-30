@@ -17,34 +17,12 @@ using System.Windows.Shapes;
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
-    /// Interaction logic for ResetPassword.xaml
+    /// Interaction logic for ForgotPassword.xaml
     /// </summary>
-    public partial class ResetPassword : Window
+    public partial class ForgotPassword : Window
     {
-        private string _email;
-        private string _code;
-
-        public string email
+        public ForgotPassword()
         {
-            get { return _email; }
-            set
-            {
-                if (_email != value)
-                    _email = value;
-            }
-        }
-        public string code
-        {
-            get { return _code; }
-            set
-            {
-                if (_code != value)
-                    _code = value;
-            }
-        }
-        public ResetPassword()
-        {
-            DataContext = this;
             InitializeComponent();
         }
 
@@ -55,7 +33,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            proxy.ResetPassword(_email);
+            proxy.GenerateAccessCode(forgotEmailText.Text);
             accessCodeVerify.Visibility = System.Windows.Visibility.Visible;
         }
 
@@ -69,32 +47,12 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
 
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            if (!proxy.VerifyResetPassword(_email, _code))
-                incorrectAccessCode.Visibility = System.Windows.Visibility.Visible;
-            else
-            {
-                this.Hide();
-                ChangePassword resetPage = new ChangePassword(_email);
-                resetPage.ReturnPage = "Cancel";
-                resetPage.Show();
-                this.Close();
-            }
         }
 
         private void forgotEmailText_TextChanged(object sender, TextChangedEventArgs e)
         {
             accessCodeVerify.Visibility = System.Windows.Visibility.Hidden;
         }
-
-        private void codeText_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            incorrectAccessCode.Visibility = System.Windows.Visibility.Hidden;
-        }
     }
 }
-

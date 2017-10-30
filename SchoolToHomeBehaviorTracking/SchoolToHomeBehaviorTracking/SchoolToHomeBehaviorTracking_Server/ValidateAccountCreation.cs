@@ -10,13 +10,13 @@ namespace SchoolToHomeBehaviorTracking_Server
 {
     public class ValidateAccountCreation
     {
-        bool invalid = false;
+        bool _invalid = false;
 
         //verify email in valid format
         //resource: https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
         public bool IsValidEmail(string strIn)
         {
-            invalid = false;
+            _invalid = false;
             if (String.IsNullOrEmpty(strIn))
                 return false;
 
@@ -31,7 +31,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                 return false;
             }
 
-            if (invalid)
+            if (_invalid)
                 return false;
 
             // Return true if strIn is in valid e-mail format.
@@ -60,7 +60,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch (ArgumentException)
             {
-                invalid = true;
+                _invalid = true;
             }
             return match.Groups[1].Value + domainName;
         }

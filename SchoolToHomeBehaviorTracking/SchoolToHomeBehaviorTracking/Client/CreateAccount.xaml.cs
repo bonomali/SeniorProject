@@ -21,16 +21,25 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// </summary>
     public partial class CreateAccount : Window
     {
-        public CreateAccount()
+        private string _email;
+
+        public string email
         {
-            InitializeComponent();
-            newPasswordText.MaxLength = 15;
-            newPasswordText.PasswordChar = '*';
-            reenterPasswordText.MaxLength = 15;
-            reenterPasswordText.PasswordChar = '*';
+            get { return _email; }
+            set
+            {
+                if (_email != value)
+                    _email = value;
+            }
         }
 
-        //validate email and password to create user account
+        public CreateAccount()
+        {
+            DataContext = this;
+            InitializeComponent();
+        }
+
+        //validate _email and password to create user account
         private void createButton_Click(object sender, RoutedEventArgs e)
         {
             bool emailValid = false;
@@ -41,8 +50,8 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            //validate email or display error message
-            if (!proxy.ValidateEmail(newEmailText.Text))
+            //validate _email or display error message
+            if (!proxy.ValidateEmail(_email))
             {
                 invalidEmailText.Visibility = System.Windows.Visibility.Visible;
                 emailValid = false;
@@ -70,14 +79,13 @@ namespace SchoolToHomeBehaviorTracking_Client
                     passwordValid = true;
             }
 
-            //if valid email and password, create account
+            //if valid _email and password, create account
             if (emailValid == true && passwordValid == true)
             {
-                if (proxy.CreateUser(newEmailText.Text, newPasswordText.Password.ToString()))
+                if (proxy.CreateUser(_email, newPasswordText.Password.ToString()))
                 {
                     this.Hide();
-                    Accounts accountPage = new Accounts();
-                    accountPage.Show();
+                    Dash dashPage = new Dash(_email);
                     this.Close();
                 }
                 else
@@ -88,8 +96,8 @@ namespace SchoolToHomeBehaviorTracking_Client
         //return to login page
         private void cancelAccountButton_Click(object sender, RoutedEventArgs e)
         {
-            Login loginPage = new Login();
             this.Hide();
+            Login loginPage = new Login();
             loginPage.Show();
             this.Close();
         }

@@ -18,5 +18,6 @@ namespace SchoolToHomeBehaviorTracking_Server
         public string Email { get; set; }
         public string Password { get; set; }
         public string Code { get; set; }
+        public Nullable<System.DateTime> Expiration { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,14 +21,32 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// <summary>
     /// Interaction logic for ChangePassword.xaml
     /// </summary>
-    public partial class ChangePassword : Window
+    public partial class ChangePassword : INotifyPropertyChanged
     {
-        string email = null;
+        private string _email = null;
+        private string _returnPage;
+
+        public string ReturnPage
+        {
+            get { return _returnPage; }
+            set
+            {
+                _returnPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public ChangePassword(string e)
         {
-            email = e;
+            _email = e;
             InitializeComponent();
+            this.DataContext = this;
         }
         public ChangePassword()
         {
@@ -77,20 +97,30 @@ namespace SchoolToHomeBehaviorTracking_Client
             //if valid password, change password for user
             if (passwordValid == true)
             {
-                proxy.UpdatePassword(email, newPasswordText.Password.ToString());
-                this.Hide();
-                Login loginPage = new Login();
-                loginPage.Show();
-                this.Close();
+                proxy.UpdatePassword(_email, newPasswordText.Password.ToString());
+                if (_returnPage == "Exit")
+                    this.Close();
+                else
+                {
+                    this.Hide();
+                    Login loginPage = new Login();
+                    loginPage.Show();
+                    this.Close();
+                }
             }
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            Login loginPage = new Login();
-            loginPage.Show();
-            this.Close();
+            if (_returnPage == "Exit")
+                this.Close();
+            else
+            {
+                this.Hide();
+                Login loginPage = new Login();
+                loginPage.Show();
+                this.Close();
+            }
         }
     }
 }

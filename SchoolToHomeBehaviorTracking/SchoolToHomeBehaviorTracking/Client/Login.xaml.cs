@@ -1,32 +1,35 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class Login : Window
+    public partial class Login : Window 
     {
+        private string _email;
+
+        public string email
+        {
+            get { return _email; }
+            set
+            {
+                if (_email != value)
+                {
+                    _email = value;
+                }
+            }
+        }
+      
         public Login()
         {
+            DataContext = this;
             InitializeComponent();
-            passwordText.MaxLength = 15;
-            passwordText.PasswordChar = '*';
         }
 
         //submit button to login to application
@@ -39,11 +42,10 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             //check login credentials
             //if valid: go to accounts page, if invalid display error message
-            if (proxy.Login(emailText.Text, passwordText.Password.ToString()))
+            if (proxy.Login(_email, passwordText.Password.ToString()))
             {
                 this.Hide();
-                Accounts accountPage = new Accounts();
-                accountPage.Show();
+                Dash dashPage = new Dash(_email);
                 this.Close();
             }
             else
