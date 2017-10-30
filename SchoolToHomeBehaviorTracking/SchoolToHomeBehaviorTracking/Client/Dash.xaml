@@ -7,7 +7,7 @@
         mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
         Title="DashBoard" Height="400" Width="525">
 
-    <TabControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6"  >
+    <TabControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" SelectionChanged="TabControl_SelectionChanged" >
         <TabItem x:Name="adminTab" Header="Admin" Visibility="Collapsed"></TabItem>
         <TabItem x:Name="teacherTab" Header="Teacher" Visibility="Collapsed"></TabItem>
         <TabItem x:Name="parentTab" Header="Parent" Visibility="Collapsed"></TabItem>
