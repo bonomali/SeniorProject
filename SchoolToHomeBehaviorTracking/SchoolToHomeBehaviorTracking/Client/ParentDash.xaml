@@ -7,6 +7,39 @@
              mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-       
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="logoutButton" Grid.Column="5" Grid.Row= "0" Grid.ColumnSpan="2" 
+                Content="Logout" HorizontalAlignment="Right" Margin="5,1" Click="logoutButton_Click"/>
+
+        <TextBlock x:Name="userNameText" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="3"
+                       Text="Welcome " HorizontalAlignment="Right" Margin="3, 0"/>
+        <TextBlock x:Name="loginText" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="3"
+                       Text="Last Login: " HorizontalAlignment="Right" Margin="3, 0"/>
+        
+        <Button x:Name="p_newAccountButton" Grid.Column="3" Grid.Row="9" Grid.ColumnSpan="4" 
+                Content="Add Student/Account" HorizontalAlignment="Right" 
+                Margin="3" Click="newAccountButton_Click"/>
     </Grid>
 </UserControl>

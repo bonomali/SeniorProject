@@ -67,6 +67,9 @@
     <Compile Include="Dash.xaml.cs">
       <DependentUpon>Dash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeleteTeacherVerify.xaml.cs">
+      <DependentUpon>DeleteTeacherVerify.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ParentDash.xaml.cs">
       <DependentUpon>ParentDash.xaml</DependentUpon>
     </Compile>
@@ -90,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteTeacherVerify.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

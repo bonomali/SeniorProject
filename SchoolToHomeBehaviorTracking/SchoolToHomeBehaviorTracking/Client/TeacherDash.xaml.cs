@@ -40,6 +40,27 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             _email = email;
             InitializeComponent();
+
+            ChannelFactory<IWCFService> channelFactory = new
+            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+            IWCFService proxy = channelFactory.CreateChannel();
+
+            if (proxy.ExistingParentAccount(_email))
+                t_newAccountButton.Visibility = System.Windows.Visibility.Hidden;
+
+            loginText.Text += proxy.GetTeacherAccessDate(_email);
+            userNameText.Text += proxy.GetTeacherUserName(_email);
+        }
+
+        private void newAccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            _delCreateMethod.DynamicInvoke();
+        }
+
+        private void logoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            _delLogoutMethod.DynamicInvoke();
         }
     }
 }
