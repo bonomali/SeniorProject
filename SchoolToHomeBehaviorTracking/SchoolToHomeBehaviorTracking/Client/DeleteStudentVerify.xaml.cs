@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
-    /// Interaction logic for DeleteTeacherVerify.xaml
+    /// Interaction logic for DeleteStudentVerify.xaml
     /// </summary>
-    public partial class DeleteTeacherVerify : Window
+    public partial class DeleteStudentVerify : Window
     {
-        AdminDash _dash = null;
+        TeacherDash _dash = null;
         string _deleteName;
 
         public string DeleteName
@@ -28,7 +28,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             set { _deleteName = value; }
         }
 
-        public DeleteTeacherVerify(AdminDash dash, string name)
+        public DeleteStudentVerify(TeacherDash dash, string name)
         {
             _dash = dash;
             InitializeComponent();
@@ -38,7 +38,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void confirmButton_Click(object sender, RoutedEventArgs e)
         {
-            _dash.RemoveTeacher();
+            _dash.DeleteStudent(DeleteName);
             this.Close();
         }
 

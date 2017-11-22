@@ -115,13 +115,13 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="connectionString.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <EntityDeploy Include="Database.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Database.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="connectionString.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Database.edmx.diagram">
       <DependentUpon>Database.edmx</DependentUpon>
     </None>
@@ -129,6 +129,15 @@
     <None Include="smtp.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolToHomeBehaviorTracking_Interface\SchoolToHomeBehaviorTracking_Interface.csproj">
+      <Project>{039db83e-67e4-455d-9738-06bb07c6d953}</Project>
+      <Name>SchoolToHomeBehaviorTracking_Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database.Context.tt">
@@ -141,15 +150,6 @@
       <DependentUpon>Database.edmx</DependentUpon>
       <LastGenOutput>Database.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SchoolToHomeBehaviorTracking_Interface\SchoolToHomeBehaviorTracking_Interface.csproj">
-      <Project>{039db83e-67e4-455d-9738-06bb07c6d953}</Project>
-      <Name>SchoolToHomeBehaviorTracking_Interface</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

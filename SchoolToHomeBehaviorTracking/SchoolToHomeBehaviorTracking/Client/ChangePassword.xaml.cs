@@ -1,20 +1,9 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
@@ -23,8 +12,13 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// </summary>
     public partial class ChangePassword : INotifyPropertyChanged
     {
-        private string _email = null;
         private string _returnPage;
+        private Delegate _delCloseMethod;
+
+        public void CallingCloseMethod(Delegate del)
+        {
+            _delCloseMethod = del;
+        }
 
         public string ReturnPage
         {
@@ -42,15 +36,10 @@ namespace SchoolToHomeBehaviorTracking_Client
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ChangePassword(string e)
-        {
-            _email = e;
-            InitializeComponent();
-            this.DataContext = this;
-        }
         public ChangePassword()
         {
             InitializeComponent();
+            this.DataContext = this;
         }
 
         private void newPasswordText_PasswordChanged(object sender, RoutedEventArgs e)
@@ -77,6 +66,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             //validate new password meets requirements or display error message
             if (!proxy.ValidatePassword(newPasswordText.Password.ToString()))
             {
+                newPasswordText.Clear();
+                reenterPasswordText.Clear();
                 invalidPasswordText.Visibility = System.Windows.Visibility.Visible;
                 passwordValid = false;
             }
@@ -87,6 +78,8 @@ namespace SchoolToHomeBehaviorTracking_Client
 
                 if (!proxy.ValidateMatchingPasswords(newPasswordText.Password.ToString(), reenterPasswordText.Password.ToString()))
                 {
+                    newPasswordText.Clear();
+                    reenterPasswordText.Clear();
                     unmatchedPasswordText.Visibility = System.Windows.Visibility.Visible;
                     passwordValid = false;
                 }
@@ -97,15 +90,12 @@ namespace SchoolToHomeBehaviorTracking_Client
             //if valid password, change password for user
             if (passwordValid == true)
             {
-                proxy.UpdatePassword(_email, newPasswordText.Password.ToString());
+                proxy.UpdatePassword(Email.EmailAddress, newPasswordText.Password.ToString());
                 if (_returnPage == "Exit")
-                    this.Close();
+                    _delCloseMethod.DynamicInvoke();
                 else
                 {
-                    this.Hide();
-                    Login loginPage = new Login();
-                    loginPage.Show();
-                    this.Close();
+                    _delCloseMethod.DynamicInvoke();
                 }
             }
         }
@@ -113,13 +103,10 @@ namespace SchoolToHomeBehaviorTracking_Client
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             if (_returnPage == "Exit")
-                this.Close();
+                _delCloseMethod.DynamicInvoke();
             else
             {
-                this.Hide();
-                Login loginPage = new Login();
-                loginPage.Show();
-                this.Close();
+                _delCloseMethod.DynamicInvoke();
             }
         }
     }

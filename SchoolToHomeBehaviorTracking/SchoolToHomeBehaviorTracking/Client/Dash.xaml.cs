@@ -1,7 +1,9 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,47 +25,56 @@ namespace SchoolToHomeBehaviorTracking_Client
     {
         delegate void DelCreateUserControlMethod();
         delegate void DelLogoutUserControlMethod();
-        private string _email = null;
+        delegate void DelHideCreateControlMethod();
 
-        public Dash(string e)
+        public Dash()
+        {
+            InitializeComponent();
+            ShowTabs();
+        }
+
+        //determine which tabs to show
+        public void ShowTabs()
         {
             DelCreateUserControlMethod delUserCreateControl = new DelCreateUserControlMethod(CreateAccount);
             DelLogoutUserControlMethod delUserLogoutControl = new DelLogoutUserControlMethod(Logout);
-
-            _email = e;
+            DelHideCreateControlMethod delUserHideCreateControl = new DelHideCreateControlMethod(ShowTabs);
             bool parentAccounts = false;
             bool adminAccounts = false;
             bool teacherAccounts = false;
+
+            createAccountUC.HideCreateAccountMethod = delUserHideCreateControl;
+            createAccountUC.LogoutMethod = delUserLogoutControl;
+
+            createAccount.Visibility = System.Windows.Visibility.Collapsed;
 
             ChannelFactory<IWCFService> channelFactory = new
                ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            InitializeComponent();
-
             //initialize correct tabs for user accounts
-            if (proxy.ExistingParentAccount(_email))
+            if (proxy.ExistingParentAccount(Email.EmailAddress))
             {
-                ParentDash pDash = new ParentDash(_email);
+                ParentDash pDash = new ParentDash();
                 pDash.CallingCreateMethod = delUserCreateControl;
                 pDash.CallingLogoutMethod = delUserLogoutControl;
                 this.parentTab.Content = pDash;
                 this.parentTab.Visibility = System.Windows.Visibility.Visible;
                 parentAccounts = true;
             }
-            if (proxy.ExistingTeacherAccount(_email))
+            if (proxy.ExistingTeacherAccount(Email.EmailAddress))
             {
-                TeacherDash tDash = new TeacherDash(_email);
+                TeacherDash tDash = new TeacherDash();
                 tDash.CallingCreateMethod = delUserCreateControl;
                 tDash.CallingLogoutMethod = delUserLogoutControl;
                 this.teacherTab.Content = tDash;
                 this.teacherTab.Visibility = System.Windows.Visibility.Visible;
                 teacherAccounts = true;
             }
-            if (proxy.ExistingAdminAccount(_email))
+            if (proxy.ExistingAdminAccount(Email.EmailAddress))
             {
-                AdminDash aDash = new AdminDash(_email);
+                AdminDash aDash = new AdminDash();
                 aDash.CallingCreateMethod = delUserCreateControl;
                 aDash.CallingLogoutMethod = delUserLogoutControl;
                 this.adminTab.Content = aDash;
@@ -73,6 +84,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             //go to dashboard if user already has accounts
             if (parentAccounts || teacherAccounts || adminAccounts)
             {
+
                 //determine which tab has focus
                 if (TabFocus.Focus == "admin")
                     this.adminTab.Focus();
@@ -84,7 +96,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                     this.adminTab.Focus();
                 else if (teacherAccounts)
                     this.teacherTab.Focus();
-                else if(parentAccounts)
+                else if (parentAccounts)
                     this.parentTab.Focus();
                 this.Show();
             }
@@ -96,10 +108,12 @@ namespace SchoolToHomeBehaviorTracking_Client
         //create a new account
         public void CreateAccount()
         {
-            this.Hide();
-            Accounts accountsPage = new Accounts(_email);
-            accountsPage.Show();
-            this.Close();
+            tabControl.SelectedItem = createAccount;
+            if(!ExistingParentAccount() && !ExistingTeacherAccount())
+                createAccountUC.cancelButton.Visibility = System.Windows.Visibility.Collapsed;
+            else
+                createAccountUC.cancelButton.Visibility = System.Windows.Visibility.Visible;
+            createAccount.Visibility = System.Windows.Visibility.Visible;
         }
 
         //check if user already has parent account
@@ -111,7 +125,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            if (proxy.ExistingParentAccount(_email))
+            if (proxy.ExistingParentAccount(Email.EmailAddress))
                 return true;
             return false;
         }
@@ -125,7 +139,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            if (proxy.ExistingTeacherAccount(_email))
+            if (proxy.ExistingTeacherAccount(Email.EmailAddress))
                 return true;
             return false;
         }
@@ -133,9 +147,10 @@ namespace SchoolToHomeBehaviorTracking_Client
         //logout user, return to login screen
         public void Logout()
         {
+            Email.EmailAddress = null;
             TabFocus.Focus = null;
             this.Hide();
-            Login loginPage = new Login();
+            StartScreen loginPage = new StartScreen();
             loginPage.Show();
             this.Close();
         }
@@ -150,17 +165,17 @@ namespace SchoolToHomeBehaviorTracking_Client
             if (adminTab.IsSelected)
             {
                 TabFocus.Focus = "admin";
-                proxy.UpdateAdminLastAccess(_email);
+                proxy.UpdateAdminLastAccess(Email.EmailAddress);
             }
             else if (teacherTab.IsSelected)
             {
                 TabFocus.Focus = "teacher";
-                proxy.UpdateTeacherLastAccess(_email);
+                proxy.UpdateTeacherLastAccess(Email.EmailAddress);
             }
             else if (parentTab.IsSelected)
             {
                 TabFocus.Focus = "parent";
-                proxy.UpdateParentLastAccess(_email);
+                proxy.UpdateParentLastAccess(Email.EmailAddress);
             }
         }
     }

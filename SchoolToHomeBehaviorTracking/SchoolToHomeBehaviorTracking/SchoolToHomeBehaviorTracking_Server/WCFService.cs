@@ -1,6 +1,7 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -345,6 +346,14 @@ namespace SchoolToHomeBehaviorTracking_Server
                     var parent = db.parentaccounts.First((i) => i.UserID == user.UserID);
                     var student = db.students.First((s) => s.TeacherCode == teachercode);
 
+                    //check if parent already has student
+                    var result = db.parenttostudents.Where(p => p.ParentID == parent.ParentID && 
+                                                            p.StudentID == student.StudentID).FirstOrDefault();
+                    if (result != null)
+                    {
+                        return false;
+                    }
+
                     parenttostudent pTos = new parenttostudent();
                     pTos.ParentID = parent.ParentID;
                     pTos.StudentID = student.StudentID;
@@ -362,7 +371,7 @@ namespace SchoolToHomeBehaviorTracking_Server
         }
 
         //return data for a specific student
-        public StudentData GetStudent(string lastName)
+        public StudentData GetStudent(string fname, string lname)
         {
             StudentData studentData = null;
 
@@ -371,12 +380,21 @@ namespace SchoolToHomeBehaviorTracking_Server
                 using (test_dbEntities db = new test_dbEntities())
                 {
                     studentData = new StudentData();
-                    student matchingStudent = db.students.First((s) => s.LastName == lastName);
+                    student matchingStudent = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
 
                     studentData.FirstName = matchingStudent.FirstName;
                     studentData.LastName = matchingStudent.LastName;
                     studentData.BirthDate = matchingStudent.BirthDate;
-                    studentData.Grade = matchingStudent.Grade.Value;
+                    studentData.Grade = matchingStudent.Grade;
+                    studentData.Parent1Name = matchingStudent.ParentGuardian1;
+                    studentData.Parent1Phone = matchingStudent.ParentGuardian1Phone;
+                    studentData.Parent1Address = matchingStudent.ParentGuardian1Address;
+                    studentData.Parent2Name = matchingStudent.ParentGuardian2;
+                    studentData.Parent2Phone = matchingStudent.ParentGuardian2Phone;
+                    studentData.Parent2Address = matchingStudent.ParentGuardian2Address;
+                    studentData.TeacherCode = matchingStudent.TeacherCode;
+
+                    return studentData;
                 }
             }
             catch
@@ -388,7 +406,7 @@ namespace SchoolToHomeBehaviorTracking_Server
         }
 
         //return a list of students
-        public List<string> ListStudents()
+        public List<string> ListStudents(string email)
         {
             List<string> studentsList = new List<string>();
 
@@ -396,10 +414,16 @@ namespace SchoolToHomeBehaviorTracking_Server
             {
                 using (test_dbEntities db = new test_dbEntities()) 
                 {
-                    var students = from s in db.students
-                                   select s.LastName + ", " + s.FirstName;
+                    var user = db.users.First((e) => e.Email == email);
+                    var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
+                    var students = db.students.ToList();
 
-                    studentsList = students.ToList();
+                    foreach(var s in students)
+                    {
+                        if (s.TeacherID == teacher.TeacherID)
+                            studentsList.Add(s.LastName + ", " + s.FirstName);
+                    }
+                    studentsList.Sort();
                 }
             }
             catch
@@ -584,8 +608,22 @@ namespace SchoolToHomeBehaviorTracking_Server
                 {
                     accesscode newTeacher = new accesscode();
                     newTeacher.FullName = fname + " " + lname;
-                    int accessCode = db.accesscodes.Count() + 100000;
-                    newTeacher.AccessCode1 = accessCode;
+
+                    Random rand = new Random();
+                    bool codeAssigned = false;
+                    int accessCode = -1;
+
+                    while (!codeAssigned)
+                    {
+                        accessCode = rand.Next(1000, 100000);
+                        var result = db.teacheraccounts.Where(x => x.AccessCode == accessCode).FirstOrDefault();
+
+                        if (result == null)
+                        {
+                            newTeacher.AccessCode1 = accessCode;
+                            codeAssigned = true;
+                        }
+                    }
                     db.accesscodes.Add(newTeacher);
                     db.SaveChanges();
 
@@ -677,6 +715,205 @@ namespace SchoolToHomeBehaviorTracking_Server
             {
                 Console.WriteLine("Error in access code lookup");
                 return -1;
+            }
+        }
+
+        public int GenerateTeacherCode()
+        {
+            try
+            {
+               using(test_dbEntities db = new test_dbEntities())
+                {
+                    var count = db.students.Count();
+                    int teacherCode = db.students.Count() + 1000;
+                    
+                    return teacherCode;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in add teacher");
+                return -1;
+            }
+        }
+
+        //Add a student to teacher account
+        //Return teacher code on success, -1 on failure
+        public int AddStudent(string email, StudentData stud)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
+
+                    //check if student with same name already exists
+                    var result = db.students.Where(x => x.FirstName == stud.FirstName &&
+                                                            x.LastName == stud.LastName).FirstOrDefault();
+                    if (result != null)
+                    {
+                        return -1;
+                    }
+
+                    student s = new student();
+                    s.TeacherID = teacher.TeacherID;
+                    s.FirstName = stud.FirstName;
+                    s.LastName = stud.LastName;
+                    s.BirthDate = stud.BirthDate;
+                    s.Grade = stud.Grade;
+                    s.ParentGuardian1 = stud.Parent1Name;
+                    s.ParentGuardian1Phone = stud.Parent1Phone;
+                    s.ParentGuardian1Address = stud.Parent1Address;
+                    s.ParentGuardian2 = stud.Parent2Name;
+                    s.ParentGuardian2Phone = stud.Parent2Phone;
+                    s.ParentGuardian2Address = stud.Parent2Address;
+
+                    Random rand = new Random();
+                    bool codeAssigned = false;
+                    int teacherCode = -1;
+
+                    while (!codeAssigned)
+                    {
+                        teacherCode = rand.Next(1000, 100000);
+                        result = db.students.Where(x => x.TeacherCode == teacherCode).FirstOrDefault();
+
+                        if (result == null)
+                        {
+                            s.TeacherCode = teacherCode;
+                            codeAssigned = true;
+                        }
+                    }
+                    db.students.Add(s);
+                    db.SaveChanges();
+
+                    return teacherCode;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in add student");
+                return -1;
+            }
+        }
+
+        //Update teacher username
+        //Return true on success, false on failure
+        public bool UpdateTeacherUserName(string email, string newUserName)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
+                    if (newUserName == null || newUserName == "")
+                        newUserName = user.Email;
+                    teacher.UserName = newUserName;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in update teacher username");
+                return false;
+            }
+            return true;
+        }
+
+        //Update parent username
+        //Return true on success, false on failure
+        public bool UpdateParentUserName(string email, string newUserName)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var parent = db.parentaccounts.First((p) => p.UserID == user.UserID);
+                    if (newUserName == null || newUserName == "")
+                        newUserName = user.Email;
+                    parent.UserName = newUserName;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in update parent username");
+                return false;
+            }
+            return true;
+        }
+
+        //Delete a student
+        //Return true on success, false on failure
+        public bool DeleteStudent(string email, string fname, string lname)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname
+                                                        && s.TeacherID == teacher.TeacherID);
+
+                    db.students.Remove(student);
+                    db.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in delete student");
+                return false;
+            }
+        }
+
+        public bool UpdateStudent(string email, string fname, string lname, StudentData stud)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname
+                                                    && s.TeacherID == teacher.TeacherID);
+
+                    if (stud.FirstName == "" || stud.LastName == "")
+                        return false;
+
+                    //check if student with same name already exists
+                    var result = db.students.Where(s => s.FirstName == stud.FirstName && s.LastName == stud.LastName
+                                                        && s.TeacherCode != stud.TeacherCode).FirstOrDefault();
+                    if (result != null)
+                    {
+                        return false;
+                    }
+
+                    student.FirstName = stud.FirstName;
+                    student.LastName = stud.LastName;
+                    student.BirthDate = stud.BirthDate;
+                    student.Grade = stud.Grade;
+                    student.ParentGuardian1 = stud.Parent1Name;
+                    student.ParentGuardian1Phone = stud.Parent1Phone;
+                    student.ParentGuardian1Address = stud.Parent1Address;
+                    student.ParentGuardian2 = stud.Parent2Name;
+                    student.ParentGuardian2Phone = stud.Parent2Phone;
+                    student.ParentGuardian2Address = stud.Parent2Address;
+                    student.TeacherCode = student.TeacherCode;
+                    student.TeacherID = student.TeacherID;
+                    db.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in edit student");
+                return false;
             }
         }
     }

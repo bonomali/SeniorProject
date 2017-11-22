@@ -12,7 +12,7 @@ namespace SchoolToHomeBehaviorTracking_Interface
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string BirthDate { get; set; }
-        public int Grade { get; set; }
+        public string Grade { get; set; }
         public string Parent1Name { get; set; }
         public string Parent1Phone { get; set; }
         public string Parent1Address { get; set; }

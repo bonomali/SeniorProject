@@ -1,27 +1,29 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for CreateAccount.xaml
     /// </summary>
-    public partial class CreateAccount : Window
+    public partial class CreateAccount : UserControl
     {
         private string _email;
+        private Delegate _delCloseMethod;
+        private Delegate _delLoginMethod;
+
+        public void CallingCloseMethod(Delegate del)
+        {
+            _delCloseMethod = del;
+        }
+
+        public void CallingLoginMethod(Delegate del)
+        {
+            _delLoginMethod = del;
+        }
 
         public string email
         {
@@ -39,7 +41,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             InitializeComponent();
         }
 
-        //validate _email and password to create user account
+        //validate email and password to create user account
         private void createButton_Click(object sender, RoutedEventArgs e)
         {
             bool emailValid = false;
@@ -50,9 +52,11 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            //validate _email or display error message
+            //validate email or display error message
             if (!proxy.ValidateEmail(_email))
             {
+                newPasswordText.Clear();
+                reenterPasswordText.Clear();
                 invalidEmailText.Visibility = System.Windows.Visibility.Visible;
                 emailValid = false;
             }
@@ -62,6 +66,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             //validate password meets requirements or display error message
             if (!proxy.ValidatePassword(newPasswordText.Password.ToString()))
             {
+                newPasswordText.Clear();
+                reenterPasswordText.Clear();
                 invalidPasswordText.Visibility = System.Windows.Visibility.Visible;
                 passwordValid = false;
             }
@@ -72,6 +78,8 @@ namespace SchoolToHomeBehaviorTracking_Client
 
                 if (!proxy.ValidateMatchingPasswords(newPasswordText.Password.ToString(), reenterPasswordText.Password.ToString()))
                 {
+                    newPasswordText.Clear();
+                    reenterPasswordText.Clear();
                     unmatchingPasswordText.Visibility = System.Windows.Visibility.Visible;
                     passwordValid = false;
                 }
@@ -79,27 +87,29 @@ namespace SchoolToHomeBehaviorTracking_Client
                     passwordValid = true;
             }
 
-            //if valid _email and password, create account
+            //if valid email and password, create account
             if (emailValid == true && passwordValid == true)
             {
                 if (proxy.CreateUser(_email, newPasswordText.Password.ToString()))
                 {
-                    this.Hide();
-                    Dash dashPage = new Dash(_email);
-                    this.Close();
+                    Email.EmailAddress = _email;
+                    Dash dashPage = new Dash();
+                    dashPage.Show();
+                    _delCloseMethod.DynamicInvoke();
                 }
                 else
+                {
+                    newPasswordText.Clear();
+                    reenterPasswordText.Clear();
                     duplicateEmailText.Visibility = System.Windows.Visibility.Visible;
+                }
             }            
         }
 
         //return to login page
         private void cancelAccountButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            Login loginPage = new Login();
-            loginPage.Show();
-            this.Close();
+            _delLoginMethod.DynamicInvoke();
         }
 
         private void newEmailText_TextChanged(object sender, TextChangedEventArgs e)

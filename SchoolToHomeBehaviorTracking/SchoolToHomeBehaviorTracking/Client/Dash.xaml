@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
         mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-        Title="DashBoard" Height="400" Width="525">
+        Title="User DashBoard" Height="550" Width="600">
 
-    <TabControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" SelectionChanged="TabControl_SelectionChanged" >
+    <TabControl x:Name="tabControl" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" SelectionChanged="TabControl_SelectionChanged" >
+        <TabItem x:Name="createAccount" Header="Create Account" Visibility="Collapsed" >
+            <local:Accounts x:Name="createAccountUC"></local:Accounts>
+        </TabItem>
         <TabItem x:Name="adminTab" Header="Admin" Visibility="Collapsed"></TabItem>
         <TabItem x:Name="teacherTab" Header="Teacher" Visibility="Collapsed"></TabItem>
         <TabItem x:Name="parentTab" Header="Parent" Visibility="Collapsed"></TabItem>

@@ -19,10 +19,22 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// <summary>
     /// Interaction logic for ResetPassword.xaml
     /// </summary>
-    public partial class ResetPassword : Window
+    public partial class ResetPassword : UserControl
     {
         private string _email;
         private string _code;
+        private Delegate _delCloseMethod;
+        private Delegate _delChangePasswordMethod;
+
+        public void CallingCloseMethod(Delegate del)
+        {
+            _delCloseMethod = del;
+        }
+
+        public void CallingChangePasswordMethod(Delegate del)
+        {
+            _delChangePasswordMethod = del;
+        }
 
         public string email
         {
@@ -61,10 +73,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            Login loginPage = new Login();
-            loginPage.Show();
-            this.Close();
+            _delCloseMethod.DynamicInvoke();
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
@@ -78,11 +87,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 incorrectAccessCode.Visibility = System.Windows.Visibility.Visible;
             else
             {
-                this.Hide();
-                ChangePassword resetPage = new ChangePassword(_email);
-                resetPage.ReturnPage = "Cancel";
-                resetPage.Show();
-                this.Close();
+                _delChangePasswordMethod.DynamicInvoke();
             }
         }
 

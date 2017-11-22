@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
              mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-             d:DesignHeight="400" d:DesignWidth="525">
+             d:DesignHeight="550" d:DesignWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -45,25 +45,20 @@
         <TextBlock x:Name="teacherFName" HorizontalAlignment="Right"
                 Text="{Binding Path=Text1Text, Mode=TwoWay}" Margin="10,0,0,0"/>
             <TextBox x:Name="teacherFNameText" HorizontalAlignment="Left" MinWidth="200" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=FirstNameText, Mode=TwoWay}"
-                     TextChanged="teacherFNameText_TextChanged"/>
+                     VerticalAlignment="Top" Text="{Binding Path=FirstNameText, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="5" Orientation="Horizontal">
         <TextBlock x:Name="teacherLName" HorizontalAlignment="Right"
                  Text="{Binding Path=Text2Text, Mode=TwoWay}" Margin="10,0,0,0"/>
             <TextBox x:Name="teacherLNameText" HorizontalAlignment="Left" MinWidth="200" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=LastNameText, Mode=TwoWay}"
-                     TextChanged="teacherLNameText_TextChanged"/>
+                     VerticalAlignment="Top" Text="{Binding Path=LastNameText, Mode=TwoWay}"/>
         </StackPanel>
 
-        <TextBlock x:Name="invalidTeacherName" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
-                Text="Invalid/Duplicate Name" Margin="100,0,0,0" Foreground="IndianRed"
+        <TextBlock x:Name="invalidEntryMsg" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
+                Text="{Binding Path=ErrorMsg, Mode=TwoWay}" Margin="100,0,0,0" Foreground="IndianRed"
                    Visibility="Collapsed"/>
         <TextBlock x:Name="accessCode" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
                 Text="{Binding Path=AccessCode, Mode=TwoWay}" Margin="40,0,0,0" Foreground="DarkGreen" FontSize="18"
-                   Visibility="Collapsed"/>
-        <TextBlock x:Name="invalidUpdateInfo" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
-                Text="Invalid/Mismatched Entries" Margin="100,0,0,0" Foreground="IndianRed"
                    Visibility="Collapsed"/>
         <TextBlock x:Name="validUpdateInfo" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
                 Text="Email Updated" Margin="100,0,0,0" Foreground="DarkGreen"

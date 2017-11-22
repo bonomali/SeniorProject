@@ -58,6 +58,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddStudentForm.xaml.cs">
+      <DependentUpon>AddStudentForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddStudentPopUp.xaml.cs">
+      <DependentUpon>AddStudentPopUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AdminDash.xaml.cs">
       <DependentUpon>AdminDash.xaml</DependentUpon>
     </Compile>
@@ -67,20 +73,44 @@
     <Compile Include="Dash.xaml.cs">
       <DependentUpon>Dash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeleteStudentVerify.xaml.cs">
+      <DependentUpon>DeleteStudentVerify.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeleteTeacherVerify.xaml.cs">
       <DependentUpon>DeleteTeacherVerify.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditStudentForm.xaml.cs">
+      <DependentUpon>EditStudentForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Email.cs" />
+    <Compile Include="ListStudents.xaml.cs">
+      <DependentUpon>ListStudents.xaml</DependentUpon>
     </Compile>
     <Compile Include="ParentDash.xaml.cs">
       <DependentUpon>ParentDash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PasswordRecovery.xaml.cs">
+      <DependentUpon>PasswordRecovery.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResetPassword.xaml.cs">
       <DependentUpon>ResetPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StartScreen.xaml.cs">
+      <DependentUpon>StartScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="TabFocus.cs" />
     <Compile Include="TeacherDash.xaml.cs">
       <DependentUpon>TeacherDash.xaml</DependentUpon>
     </Compile>
     <Page Include="Accounts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddStudentForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddStudentPopUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -96,7 +126,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DeleteStudentVerify.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DeleteTeacherVerify.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditStudentForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListStudents.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -126,7 +168,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PasswordRecovery.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResetPassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StartScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

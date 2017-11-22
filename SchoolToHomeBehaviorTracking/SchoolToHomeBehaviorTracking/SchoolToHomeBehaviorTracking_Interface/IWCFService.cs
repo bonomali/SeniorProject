@@ -90,13 +90,14 @@ namespace SchoolToHomeBehaviorTracking_Interface
         [OperationContract]
         bool ExistingParentAccount(string email);
 
-        //return a list of students
+        //return a list of students for teacher
+        //return list of students
         [OperationContract]
-        List<string> ListStudents();
+        List<string> ListStudents(string email);
 
         //return information for single student
         [OperationContract]
-        StudentData GetStudent(string lastName);
+        StudentData GetStudent(string fname, string lname);
 
         [OperationContract]
         string GetTeacherUserName(string email);
@@ -145,5 +146,30 @@ namespace SchoolToHomeBehaviorTracking_Interface
         //Return access code on success, -1 on failure
         [OperationContract]
         int AccessCodeLookup(string name);
+
+        //Add student to teacher account
+        //Return teacher code on success, -1 on failure
+        [OperationContract]
+        int AddStudent(string email, StudentData stud);
+
+        //Update teacher username
+        //retur true on success, false on failure
+        [OperationContract]
+        bool UpdateTeacherUserName(string email, string newUserName);
+
+        //Update teacher username
+        //retur true on success, false on failure
+        [OperationContract]
+        bool UpdateParentUserName(string email, string newUserName);
+
+        //Delete a student
+        //Return true on success, false on failure
+        [OperationContract]
+        bool DeleteStudent(string email, string fname, string lname);
+
+        //Update student
+        //Return true on success, false on failure
+        [OperationContract]
+        bool UpdateStudent(string email, string fname, string lname, StudentData stud);
     }
 }

@@ -1,39 +1,42 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Accounts.xaml
     /// </summary>
-    public partial class Accounts : Window
+    public partial class Accounts : INotifyPropertyChanged
     {
         private string _pUserName;
         private string _tUserName;
         private string _accessCode;
         private string _teacherCode;
-        private string _email = null;
+        private Delegate _delHideCreateAccountMethod;
+        private Delegate _delLogoutMethod;
+
+        public Delegate HideCreateAccountMethod
+        {
+            set { _delHideCreateAccountMethod = value; }
+        }
+
+        public Delegate LogoutMethod
+        {
+            set { _delLogoutMethod = value; }
+        }
 
         public string pUserName
         {
             get { return _pUserName; }
             set
             {
-                if (_pUserName != value)
-                    _pUserName = value;
+                _pUserName = value;
+                OnPropertyChanged();
             }
         }
 
@@ -42,8 +45,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             get { return _tUserName; }
             set
             {
-                if (_tUserName != value)
-                    _tUserName = value;
+                _tUserName = value;
+                OnPropertyChanged();
             }
         }
 
@@ -52,8 +55,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             get { return _accessCode; }
             set
             {
-                if (_accessCode != value)
-                    _accessCode = value;
+                _accessCode = value;
+                OnPropertyChanged();
             }
         }
         public string teacherCode
@@ -61,12 +64,18 @@ namespace SchoolToHomeBehaviorTracking_Client
             get { return _teacherCode; }
             set
             {
-                if (_teacherCode != value)
-                    _teacherCode = value;
+                _teacherCode = value;
+                OnPropertyChanged();
             }
         }
 
-        public Accounts(string e)
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public Accounts()
         {
             ChannelFactory<IWCFService> channelFactory = new
               ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
@@ -74,18 +83,12 @@ namespace SchoolToHomeBehaviorTracking_Client
             IWCFService proxy = channelFactory.CreateChannel();
 
             DataContext = this;
-            _email = e;
             InitializeComponent();
 
-            if (proxy.ExistingTeacherAccount(_email))
+            if (proxy.ExistingTeacherAccount(Email.EmailAddress))
                 teacher.Visibility = System.Windows.Visibility.Collapsed;
-            if (proxy.ExistingParentAccount(_email))
+            if (proxy.ExistingParentAccount(Email.EmailAddress))
                 parent.Visibility = System.Windows.Visibility.Collapsed;
-        }
-
-        public Accounts()
-        {
-            InitializeComponent();
         }
 
         private void teacher_Checked(object sender, RoutedEventArgs e)
@@ -126,13 +129,13 @@ namespace SchoolToHomeBehaviorTracking_Client
                     int code = Convert.ToInt32(_accessCode);
                     if (proxy.ValidateTeacherAccessCode(code))
                     {
-                        if (proxy.AddTeacherAccount(_email, code, _tUserName))
+                        if (proxy.AddTeacherAccount(Email.EmailAddress, code, _tUserName))
                         {
-                            proxy.UpdateTeacherLastAccess(_email);
+                            tUserName = "";
+                            accessCode = "";
+                            proxy.UpdateTeacherLastAccess(Email.EmailAddress);
                             TabFocus.Focus = "teacher";
-                            this.Hide();
-                            Dash dashPage = new Dash(_email);
-                            this.Close();
+                            _delHideCreateAccountMethod.DynamicInvoke();
                         }
                         else
                             invalidAccessCodeText.Visibility = System.Windows.Visibility.Visible;
@@ -152,13 +155,13 @@ namespace SchoolToHomeBehaviorTracking_Client
                     int code = Convert.ToInt32(_teacherCode);
                     if (proxy.ValidateParentTeacherCode(code))
                     {
-                        if (proxy.AddParentAccount(_email, _pUserName))
+                        if (proxy.AddParentAccount(Email.EmailAddress, _pUserName))
                         {
-                            proxy.UpdateParentLastAccess(_email);
+                            pUserName = "";
+                            teacherCode = "";
+                            proxy.UpdateParentLastAccess(Email.EmailAddress);
                             TabFocus.Focus = "parent";
-                            this.Hide();
-                            Dash dashPage = new Dash(_email);
-                            this.Close();
+                            _delHideCreateAccountMethod.DynamicInvoke();
                         }
                         else
                             invalidTeacherCodeText.Visibility = System.Windows.Visibility.Visible;
@@ -178,11 +181,10 @@ namespace SchoolToHomeBehaviorTracking_Client
                     int code = Convert.ToInt32(_teacherCode);
                     if (proxy.ValidateParentTeacherCode(code))
                     {
-                        if (proxy.AddStudentToParentAccount(_email, code))
+                        if (proxy.AddStudentToParentAccount(Email.EmailAddress, code))
                         {
-                            this.Hide();
-                            Dash dashPage = new Dash(_email);
-                            this.Close();
+                            teacherCode = "";
+                            _delHideCreateAccountMethod.DynamicInvoke();
                         }
                         else
                             invalidAddTeacherCodeText.Visibility = System.Windows.Visibility.Visible;
@@ -199,9 +201,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            Dash dashPage = new Dash(_email);
-            this.Close();
+            _delHideCreateAccountMethod.DynamicInvoke();
         }
 
         private void addStudent_Checked(object sender, RoutedEventArgs e)
@@ -219,10 +219,7 @@ namespace SchoolToHomeBehaviorTracking_Client
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             TabFocus.Focus = null;
-            this.Hide();
-            Login loginPage = new Login();
-            loginPage.Show();
-            this.Close();
+            _delLogoutMethod.DynamicInvoke();
         }
     }
 }

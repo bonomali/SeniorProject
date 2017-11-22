@@ -1,4 +1,5 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
@@ -10,9 +11,21 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class Login : Window 
+    public partial class Login : UserControl
     {
         private string _email;
+        private Delegate _delCloseMethod;
+        private Delegate _delCreateMethod;
+
+        public void CallingCloseMethod(Delegate del)
+        {
+            _delCloseMethod = del;
+        }
+
+        public void CallingCreateMethod(Delegate del)
+        {
+            _delCreateMethod = del;
+        }
 
         public string email
         {
@@ -44,27 +57,28 @@ namespace SchoolToHomeBehaviorTracking_Client
             //if valid: go to accounts page, if invalid display error message
             if (proxy.Login(_email, passwordText.Password.ToString()))
             {
-                this.Hide();
-                Dash dashPage = new Dash(_email);
-                this.Close();
+                Email.EmailAddress = _email;
+                Dash dashPage = new Dash();
+                dashPage.Show();
+                _delCloseMethod.DynamicInvoke();
             }
             else
+            {
+                passwordText.Clear();
                 invalidText.Visibility = System.Windows.Visibility.Visible;
+            }
         }
 
         //exit application
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            _delCloseMethod.DynamicInvoke();
         }
 
         //open window to create a new account
         private void createAccountButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            CreateAccount accountPage = new CreateAccount();
-            accountPage.Show();
-            this.Close();
+            _delCreateMethod.DynamicInvoke();
         }
 
         private void emailText_TextChanged(object sender, TextChangedEventArgs e)
@@ -80,10 +94,8 @@ namespace SchoolToHomeBehaviorTracking_Client
         //open window to reset password
         private void forgotPasswordButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            ResetPassword restPage = new ResetPassword();
+            PasswordRecovery restPage = new PasswordRecovery();
             restPage.Show();
-            this.Close();
         }
     }
 }

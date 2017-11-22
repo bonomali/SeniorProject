@@ -24,7 +24,6 @@ namespace SchoolToHomeBehaviorTracking_Client
     {
         private System.Delegate _delCreateMethod;
         private System.Delegate _delLogoutMethod;
-        private string _email = null;
 
         public Delegate CallingCreateMethod
         {
@@ -36,9 +35,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             set { _delLogoutMethod = value; }
         }
 
-        public ParentDash(string email)
+        public ParentDash()
         {
-            _email = email;
             InitializeComponent();
 
             ChannelFactory<IWCFService> channelFactory = new
@@ -46,8 +44,8 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             IWCFService proxy = channelFactory.CreateChannel();
 
-            loginText.Text += proxy.GetParentAccessDate(_email);
-            userNameText.Text += proxy.GetParentUserName(_email);
+            loginText.Text += proxy.GetParentAccessDate(Email.EmailAddress);
+            userNameText.Text += proxy.GetParentUserName(Email.EmailAddress);
         }
 
         private void newAccountButton_Click(object sender, RoutedEventArgs e)

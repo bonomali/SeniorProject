@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
-             mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-             d:DesignHeight="300" d:DesignWidth="300">
+            mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
+             d:DesignHeight="550" d:DesignWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -15,8 +15,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
@@ -27,18 +28,80 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="logoutButton" Grid.Column="5" Grid.Row= "0" Grid.ColumnSpan="2" 
-                Content="Logout" HorizontalAlignment="Right" Margin="5,1" Click="logoutButton_Click"/>
+        <Button x:Name="logoutButton" Grid.Column="6" Grid.Row= "0" Grid.ColumnSpan="2" 
+                Content="Logout" HorizontalAlignment="Right" Margin="5,1" MaxHeight="30" MinWidth="60" Click="logoutButton_Click"/>
 
-        <TextBlock x:Name="userNameText" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="3"
-                       Text="Welcome " HorizontalAlignment="Right" Margin="3,0"/>
-        <TextBlock x:Name="loginText" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="3"
-                Text="Last Login: " HorizontalAlignment="Right" Margin="3,0"/>
+        <TextBlock x:Name="userNameText" Grid.Column="5" Grid.Row="1" Grid.ColumnSpan="3" 
+                   Text="{Binding Path=UserName, Mode=TwoWay}" HorizontalAlignment="Right" Margin="3, 0"/>
+        <TextBlock x:Name="loginText" Grid.Column="5" Grid.Row="2" Grid.ColumnSpan="4"
+                Text="{Binding Path=LastAccess, Mode=TwoWay}" HorizontalAlignment="Right" Margin="3,0"/>
+
+        <TextBlock x:Name="menuHeaderText" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" 
+                   Text="{Binding Path=MenuHeader, Mode=TwoWay}" FontSize="18" Margin="10,0"/>
+
+        <StackPanel x:Name="addStudentForm" Visibility="Collapsed" 
+                   Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
+            <local:AddStudentForm x:Name="addStudentFormUC"></local:AddStudentForm>
+        </StackPanel>
+
+        <StackPanel x:Name="editStudentForm" Visibility="Collapsed" 
+                   Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
+            <local:EditStudentForm x:Name="editStudentUC"></local:EditStudentForm>
+        </StackPanel>
         
-        <Button x:Name="t_newAccountButton" Grid.Column="4" Grid.Row="9" Grid.ColumnSpan="3" 
+        <StackPanel x:Name="listStudents" Visibility="Collapsed" 
+                   Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
+            <local:ListStudents x:Name="listStudentsUC"></local:ListStudents>
+        </StackPanel>
+        
+        <StackPanel x:Name="Panel1" Visibility="Collapsed" Grid.Column="2" Grid.Row="4" Grid.ColumnSpan="5" Orientation="Horizontal">
+            <TextBlock x:Name="text1Text" HorizontalAlignment="Right"
+                Text="{Binding Path=Text1Text, Mode=TwoWay}" Margin="10,0,0,0"/>
+            <TextBox x:Name="textBox1Text" HorizontalAlignment="Left" MinWidth="200" MaxHeight="20" 
+                     VerticalAlignment="Top" Text="{Binding Path=TextBox1Text, Mode=TwoWay}"/>
+        </StackPanel>
+        <StackPanel x:Name="Panel2" Visibility="Collapsed" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="5" Orientation="Horizontal">
+            <TextBlock x:Name="text2Text" HorizontalAlignment="Right"
+                 Text="{Binding Path=Text2Text, Mode=TwoWay}" Margin="10,0,0,0"/>
+            <TextBox x:Name="textBox2Text" HorizontalAlignment="Left" MinWidth="200" MaxHeight="20" 
+                     VerticalAlignment="Top" Text="{Binding Path=TextBox2Text, Mode=TwoWay}"/>
+        </StackPanel>
+
+        <TextBlock x:Name="invalidEntryMsg" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
+                Text="{Binding Path=ErrorMsg, Mode=TwoWay}" Margin="100,0,0,0" Foreground="IndianRed"
+                   Visibility="Collapsed"/>
+        <TextBlock x:Name="successMsg" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="6" 
+                Text="{Binding Path=SuccessMsg}" Margin="100,0,0,0" Foreground="DarkGreen"
+                   Visibility="Collapsed"/>
+
+        <Button x:Name="submitButton" Visibility="Collapsed" Content="{Binding Path=SubmitButtonContent, Mode=TwoWay}" Grid.Column="3" Grid.Row="7" Grid.ColumnSpan="3"
+                HorizontalAlignment="Center" MinWidth="80" MaxHeight="30" Click="submitButton_Click"/>
+        
+        <DockPanel x:Name="navMenu" Grid.Column="0" Grid.Row="0" Grid.RowSpan="10" Grid.ColumnSpan="2">
+            <Menu DockPanel.Dock="Left" Padding="0,65" Background="WhiteSmoke" MaxWidth="200">
+                <MenuItem x:Name="manageStudents" Header="_Manage Students" Margin="2,10" FontSize="14">
+                    <MenuItem x:Name="addStudent" Header="Add Student" Margin="2,10" FontSize="14" Click="addStudent_Click"/>
+                    <MenuItem x:Name="dropStudent" Header="Drop Student" Margin="2,10" FontSize="14" Click="dropStudent_Click"/>
+                    <MenuItem x:Name="editStudent" Header="Edit Student" Margin="2,10" FontSize="14" Click="editStudent_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="forms" Header="_Forms" Margin="2,10" FontSize="14">
+                    <MenuItem x:Name="addForm" Header="Add Form" Margin="2,10" FontSize="14" Click="addForm_Click"/>
+                    <MenuItem x:Name="deleteForm" Header="Delete Form" Margin="2,10" FontSize="14" Click="deleteForm_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="trackStudent" Header="_Track Student" Margin="2,10" FontSize="14" Click="trackStudent_Click"/>
+                <MenuItem x:Name="viewProgress" Header="_View Progress" FontSize="14" Margin="2,10" Click="viewProgress_Click"/>
+                <MenuItem x:Name="manageAccount" Header="_Edit Account" FontSize="14" Margin="2,10">
+                    <MenuItem x:Name="editUserName" Header="Username" FontSize="14" Click="editUserName_Click" Margin="0,0,0.333,0"/>
+                    <MenuItem x:Name="editEmail" Header="Email" FontSize="14" Click="editEmail_Click" Margin="0,0,0.333,0"/>
+                    <MenuItem x:Name="editPassword" Header="Password" FontSize="14" Click="editPassword_Click"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        
+        <Button x:Name="t_newAccountButton" Grid.Column="5" Grid.Row="9" Grid.ColumnSpan="3" 
                 Content="Add Parent Account" HorizontalAlignment="Right" 
                 Margin="3" Click="newAccountButton_Click"/>
     </Grid>
