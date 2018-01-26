@@ -61,8 +61,8 @@
     <Compile Include="AddStudentForm.xaml.cs">
       <DependentUpon>AddStudentForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddStudentPopUp.xaml.cs">
-      <DependentUpon>AddStudentPopUp.xaml</DependentUpon>
+    <Compile Include="MessagePopUp.xaml.cs">
+      <DependentUpon>MessagePopUp.xaml</DependentUpon>
     </Compile>
     <Compile Include="AdminDash.xaml.cs">
       <DependentUpon>AdminDash.xaml</DependentUpon>
@@ -83,6 +83,12 @@
       <DependentUpon>EditStudentForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Email.cs" />
+    <Compile Include="TeacherForms.xaml.cs">
+      <DependentUpon>TeacherForms.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListForms.xaml.cs">
+      <DependentUpon>ListForms.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ListStudents.xaml.cs">
       <DependentUpon>ListStudents.xaml</DependentUpon>
     </Compile>
@@ -110,7 +116,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AddStudentPopUp.xaml">
+    <Page Include="MessagePopUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -135,6 +141,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditStudentForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TeacherForms.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListForms.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -17,9 +17,11 @@ namespace SchoolToHomeBehaviorTracking_Server
         public int StudentFormID { get; set; }
         public int StudentID { get; set; }
         public int FormID { get; set; }
+        public string FormName { get; set; }
         public string FormDate { get; set; }
         public string EndDate { get; set; }
         public bool Shared { get; set; }
         public string FormData { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -24,8 +24,17 @@ namespace SchoolToHomeBehaviorTracking_Client
     /// </summary>
     public partial class TeacherDash : INotifyPropertyChanged
     {
-        delegate void DelHandleClickUserControlMethod(string studentName);
+        static ChannelFactory<IWCFService> channelFactory = new
+           ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
+
+        delegate void DelHandleStudentClickUserControlMethod(string studentName);
         delegate void DelRefreshListUserControlMethod();
+        delegate void DelHandleFormClickedUserControlMethod(string formName);
+        delegate void DelHandleFormCancelUserControlMethod();
+        delegate void DelHandleStudentFormCompleteUserControlMethod();
+
         private System.Delegate _delCreateMethod;
         private System.Delegate _delLogoutMethod;
         private string _lastAccess;
@@ -166,15 +175,17 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             InitializeComponent();
             this.DataContext = this;
-            DelHandleClickUserControlMethod delUserHandleClickControl = new DelHandleClickUserControlMethod(HandleStudentClick);
-            DelRefreshListUserControlMethod delUserRefreshListControl = new DelRefreshListUserControlMethod(RefreshList);
+
+            DelHandleStudentClickUserControlMethod delUserStudentHandleClickControl = new DelHandleStudentClickUserControlMethod(HandleStudentClick);
+            DelRefreshListUserControlMethod delUserRefreshListControl = new DelRefreshListUserControlMethod(RefreshStudentList);
+            DelHandleFormClickedUserControlMethod delUserFormClickedControl = new DelHandleFormClickedUserControlMethod(HandleFormClick);
+            DelHandleFormCancelUserControlMethod delUserFormCanceledControl = new DelHandleFormCancelUserControlMethod(ExitPreviewForm);
+            DelHandleStudentFormCompleteUserControlMethod delStudentFormCompleteControl = new DelHandleStudentFormCompleteUserControlMethod(ExitCompleteStudentForm);
             editStudentUC.CallingRefreshListMethod = delUserRefreshListControl;
-            listStudentsUC.CallingDeleteStudentMethod = delUserHandleClickControl;
-
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
+            listStudentsUC.CallingDeleteStudentMethod = delUserStudentHandleClickControl;
+            listFormsUC.CallingDeleteFormClickedMethod = delUserFormClickedControl;
+            trackingFormsUC.CallingExitPreviewForm = delUserFormCanceledControl;
+            trackingFormsUC.CallingExitCompleteStudentForm = delStudentFormCompleteControl;
 
             if (proxy.ExistingParentAccount(Email.EmailAddress))
                 t_newAccountButton.Visibility = System.Windows.Visibility.Hidden;
@@ -206,7 +217,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             ClearForms();
             ClearMessages();
             MenuHeader = "Remove Student";
-            RefreshList();
+            RefreshStudentList();
             listStudents.Visibility = System.Windows.Visibility.Visible;
         }
 
@@ -215,7 +226,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             ClearForms();
             ClearMessages();
             MenuHeader = "Edit Student";
-            RefreshList();
+            RefreshStudentList();
             listStudents.Visibility = System.Windows.Visibility.Visible;
         }
 
@@ -223,18 +234,27 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             ClearForms();
             ClearMessages();
+            MenuHeader = "Add Form To Student";
+            RefreshStudentList();
+            listStudents.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void deleteForm_Click(object sender, RoutedEventArgs e)
         {
             ClearForms();
             ClearMessages();
+            MenuHeader = "Remove Form";
+            RefreshStudentList();
+            listStudents.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void trackStudent_Click(object sender, RoutedEventArgs e)
         {
             ClearForms();
             ClearMessages();
+            MenuHeader = "Complete Student Forms";
+            RefreshStudentList();
+            listStudents.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void viewProgress_Click(object sender, RoutedEventArgs e)
@@ -273,11 +293,25 @@ namespace SchoolToHomeBehaviorTracking_Client
             addStudentForm.Visibility = System.Windows.Visibility.Collapsed;
             editStudentForm.Visibility = System.Windows.Visibility.Collapsed;
             listStudents.Visibility = System.Windows.Visibility.Collapsed;
+            listForms.Visibility = System.Windows.Visibility.Collapsed;
             Panel1.Visibility = System.Windows.Visibility.Collapsed;
             Panel2.Visibility = System.Windows.Visibility.Collapsed;
             invalidEntryMsg.Visibility = System.Windows.Visibility.Collapsed;
             successMsg.Visibility = System.Windows.Visibility.Collapsed;
             submitButton.Visibility = System.Windows.Visibility.Collapsed;
+            trackingForms.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.BehaviorScale.Visibility = System.Windows.Visibility.Visible;
+            trackingFormsUC.StudentInfo.Visibility = System.Windows.Visibility.Visible;
+            trackingFormsUC.followDirectionsForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.CompletingAssignmentsForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.InattentivenessForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.ArguingTalkingBackForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.TalkingOutOfTurnForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.customFormName.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.CustomBehaviorForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.IncidentForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.InterventionForm.Visibility = System.Windows.Visibility.Collapsed;
+            trackingFormsUC.ProgressReportForm.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         public void ClearTextFields()
@@ -288,11 +322,6 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             ClearMessages();
 
             if (MenuHeader == "Update Username")
@@ -363,6 +392,7 @@ namespace SchoolToHomeBehaviorTracking_Client
         //Handle events where student name is clicked from list
         public void HandleStudentClick(string studentName)
         {
+            _studentName = studentName;
             if(MenuHeader == "Remove Student")
             {
                 DeleteStudentVerify verify = new DeleteStudentVerify(this, studentName);
@@ -376,25 +406,158 @@ namespace SchoolToHomeBehaviorTracking_Client
                 editStudentForm.Visibility = System.Windows.Visibility.Visible;
                 editStudentUC.GetStudentInfo();
             }
+            else if(MenuHeader == "Add Form To Student")
+            {
+                ClearForms();
+                ClearMessages();
+                RefreshTeacherFormsList();
+                trackingFormsUC.StudentName = studentName;
+                listFormsUC.FormListHeader = "Select a form to add to student: " + studentName;
+                listForms.Visibility = System.Windows.Visibility.Visible;
+            }
+            else if(MenuHeader == "Complete Student Forms")
+            {
+                ClearForms();
+                ClearMessages();
+                listFormsUC.StudentName = studentName;
+                trackingFormsUC.StudentName = studentName;
+                RefreshStudentDailyFormsList();
+                listFormsUC.FormListHeader = "Select a form to complete: " + studentName;
+                listForms.Visibility = System.Windows.Visibility.Visible;
+            }
+            else if(MenuHeader == "Remove Form")
+            {
+                ClearForms();
+                ClearMessages();
+                listFormsUC.StudentName = studentName;
+                RefreshStudentFormsList();
+                listFormsUC.FormListHeader = "Select a form to remove from student: " + studentName;
+                listFormsUC.Visibility = System.Windows.Visibility.Visible;
+                listForms.Visibility = System.Windows.Visibility.Visible;
+            }
         }
+
+        //Handle events where form name is clicked from list
+        public void HandleFormClick(string name)
+        {
+            ClearForms();
+            ClearMessages();
+            trackingFormsUC.ClearFields();
+
+            if (MenuHeader == "Add Form To Student" || MenuHeader == "Complete Student Forms")
+            {
+                if (MenuHeader == "Add Form To Student")
+                    trackingFormsUC.SubmitButtonContent = "Add";
+                else
+                    trackingFormsUC.SubmitButtonContent = "Submit";
+                   
+                trackingFormsUC.FormName = name;
+                trackingForms.Visibility = System.Windows.Visibility.Visible;
+
+                if (_studentName != null)
+                {
+                    string lname = _studentName.Split(',')[0];
+                    string fname = _studentName.Split(' ')[1];
+
+                    trackingFormsUC.BehaviorDescription = proxy.GetStudentFormDescription(fname, lname, name);
+                }
+
+                if (name == "Follow Directions")
+                    trackingFormsUC.followDirectionsForm.Visibility = System.Windows.Visibility.Visible;
+                else if (name == "Completing Assignments")
+                    trackingFormsUC.CompletingAssignmentsForm.Visibility = System.Windows.Visibility.Visible;
+                else if (name == "Arguing/Talking Back")
+                    trackingFormsUC.ArguingTalkingBackForm.Visibility = System.Windows.Visibility.Visible;
+                else if (name == "Talking Out of Turn")
+                    trackingFormsUC.TalkingOutOfTurnForm.Visibility = System.Windows.Visibility.Visible;
+                else if (name == "Inattentiveness/Lack of Participation")
+                    trackingFormsUC.InattentivenessForm.Visibility = System.Windows.Visibility.Visible;
+                else if (name == "Incident Form")
+                {
+                    trackingFormsUC.BehaviorScale.Visibility = System.Windows.Visibility.Collapsed;
+                    trackingFormsUC.IncidentForm.Visibility = System.Windows.Visibility.Visible;
+                }
+                else if (name == "Intervention Form")
+                {
+                    trackingFormsUC.BehaviorScale.Visibility = System.Windows.Visibility.Collapsed;
+                    trackingFormsUC.InterventionForm.Visibility = System.Windows.Visibility.Visible;
+                }
+                else if (name == "Progress Report Form")
+                {
+                    trackingFormsUC.StudentInfo.Visibility = System.Windows.Visibility.Collapsed;
+                    trackingFormsUC.BehaviorScale.Visibility = System.Windows.Visibility.Collapsed;
+                    trackingFormsUC.ProgressReportForm.Visibility = System.Windows.Visibility.Visible;
+                }
+                else   //custom form
+                {
+                    trackingFormsUC.customFormName.Visibility = System.Windows.Visibility.Visible;
+                    trackingFormsUC.CustomBehaviorForm.Visibility = System.Windows.Visibility.Visible;
+                }
+             }
+            else if(MenuHeader == "Remove Form")
+            {
+                listFormsUC.RemoveForm();
+                RefreshStudentFormsList();
+                ClearForms();
+                listFormsUC.Visibility = System.Windows.Visibility.Visible;
+                listForms.Visibility = System.Windows.Visibility.Visible;
+            }
+        }
+
         //Delete a student
         public void DeleteStudent(string studentName)
         {
-           ChannelFactory<IWCFService> channelFactory = new
-           ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+            if (studentName != null)
+            {
+                string lname = studentName.Split(',')[0];
+                string fname = studentName.Split(' ')[1];
 
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            string lname = studentName.Split(',')[0];
-            string fname = studentName.Split(' ')[1];
-
-            proxy.DeleteStudent(Email.EmailAddress, fname, lname);
-            RefreshList();
+                proxy.DeleteStudent(Email.EmailAddress, fname, lname);
+            }
+            RefreshStudentList();
         }
 
-        public void RefreshList()
+        public void RefreshStudentList()
         {
             listStudentsUC.RefreshList();
+        }
+
+        public void RefreshTeacherFormsList()
+        {
+            listFormsUC.RefreshTeacherFormsList();
+        }
+
+        public void RefreshStudentFormsList()
+        {
+            listFormsUC.RefreshStudentForms();
+        }
+
+        public void RefreshParentFormsList()
+        {
+            listFormsUC.RefreshParentFormsList();
+        }
+
+        public void RefreshStudentDailyFormsList()
+        {
+            listFormsUC.RefreshStudentDailyForms();
+        }
+        public void ExitPreviewForm()
+        {
+            ClearForms();
+            ClearMessages();
+            
+            RefreshTeacherFormsList();
+            listForms.Visibility = System.Windows.Visibility.Visible;
+            listFormsUC.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        public void ExitCompleteStudentForm()
+        {
+            ClearForms();
+
+            RefreshStudentDailyFormsList();
+            listForms.Visibility = System.Windows.Visibility.Visible;
+            listFormsUC.Visibility = System.Windows.Visibility.Visible;
         }
     }
 }

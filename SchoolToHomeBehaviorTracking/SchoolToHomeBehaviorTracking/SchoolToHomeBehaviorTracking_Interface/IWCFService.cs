@@ -171,5 +171,37 @@ namespace SchoolToHomeBehaviorTracking_Interface
         //Return true on success, false on failure
         [OperationContract]
         bool UpdateStudent(string email, string fname, string lname, StudentData stud);
+
+        //get list of teacher use form names by category (behavior or other)
+        [OperationContract]
+        List<string> GetTeacherForms(string category);
+
+        //get list of parent use form names
+        [OperationContract]
+        List<string> GetParentForms();
+
+        //add a form to a student
+        [OperationContract]
+        bool AddFormToStudent(string form, string description, string fname, string lname);
+
+        //get list of forms for a student by category (behavior, other)
+        [OperationContract]
+        List<string> GetStudentForms(string fname, string lname, string category);
+
+        //remove a tracking form for student
+        [OperationContract]
+        bool RemoveForm(string form, string fname, string lname);
+
+        //save student tracking form
+        [OperationContract]
+        bool SaveStudentForm(StudentFormData form);
+
+        //get list of daily behavior tracking forms
+        [OperationContract]
+        List<string> GetStudentDailyForms(string fname, string lname);
+
+        //get form description for student form
+        [OperationContract]
+        string GetStudentFormDescription(string fname, string lname, string formName);
     }
 }

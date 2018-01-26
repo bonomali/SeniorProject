@@ -93,6 +93,7 @@
     <Compile Include="parenttostudent.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="SecureData.cs" />
     <Compile Include="SendEmail.cs" />
     <Compile Include="ServerProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

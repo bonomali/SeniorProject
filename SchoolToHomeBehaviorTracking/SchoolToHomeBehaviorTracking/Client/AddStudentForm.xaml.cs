@@ -1,9 +1,14 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows;
+using System.Windows.Controls;
+using static System.Windows.Forms.Control;
+using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
@@ -113,7 +118,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         public string Par2NameText
         {
-            get { return _par1NameText; }
+            get { return _par2NameText; }
             set
             {
                 _par2NameText = value;
@@ -141,12 +146,14 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
+        public IEnumerable<Control> Controls { get; private set; }
+
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
             if (StudFirstNameText == "" || StudFirstNameText == null ||
                 StudLastNameText == "" || StudLastNameText == null)
             {
-                AddStudentPopUp pop = new AddStudentPopUp("Must Enter Student's First and Last Name");
+                MessagePopUp pop = new MessagePopUp("Must Enter Student's First and Last Name");
                 pop.Show();
             }
             else
@@ -169,15 +176,15 @@ namespace SchoolToHomeBehaviorTracking_Client
                 IWCFService proxy = channelFactory.CreateChannel();
 
                 int code = proxy.AddStudent(Email.EmailAddress, student);
-                if(code != -1)
+                if (code != -1)
                 {
-                    AddStudentPopUp pop = new AddStudentPopUp(StudFirstNameText + " " + StudLastNameText + "'s Teacher Code is: " + code);
+                    MessagePopUp pop = new MessagePopUp(StudFirstNameText + " " + StudLastNameText + "'s Teacher Code is: " + code);
                     pop.Show();
                     ClearFields();
                 }
                 else
                 {
-                    AddStudentPopUp pop = new AddStudentPopUp("Duplicate/Invalid Student");
+                    MessagePopUp pop = new MessagePopUp("Duplicate/Invalid Student");
                     pop.Show();
                 }
             }
@@ -185,16 +192,16 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void ClearFields()
         {
-            StudFirstNameText = "";
-            StudLastNameText = "";
-            StudBirthDate = "";
-            StudGradeText = "";
-            Par1NameText = "";
-            Par1PhoneText = "";
-            Par1AddressText = "";
-            Par2NameText = "";
-            Par2PhoneText = "";
-            Par2AddressText = "";
+            StudFirstNameText = null;
+            StudLastNameText = null;
+            StudBirthDate = null;
+            StudGradeText = null;
+            Par1NameText = null;
+            Par1PhoneText = null;
+            Par1AddressText = null;
+            Par2NameText = null;
+            Par2PhoneText = null;
+            Par2AddressText = null;
         }
     }
 }

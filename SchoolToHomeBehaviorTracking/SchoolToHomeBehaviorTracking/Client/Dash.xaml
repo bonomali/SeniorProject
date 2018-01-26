@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-        Title="User DashBoard" Height="550" Width="600">
+        Title="User DashBoard" Height="650" Width="725">
+
 
     <TabControl x:Name="tabControl" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" SelectionChanged="TabControl_SelectionChanged" >
         <TabItem x:Name="createAccount" Header="Create Account" Visibility="Collapsed" >

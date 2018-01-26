@@ -189,21 +189,25 @@ namespace SchoolToHomeBehaviorTracking_Client
             student.Parent2Name = par2NameText.Text;
             student.Parent2Phone = par2PhoneText.Text;
             student.Parent2Address = par2AddressText.Text;
-            student.TeacherCode = Convert.ToInt32(_teacherCode.Split(' ')[2]);
+            if(_teacherCode != null)
+                student.TeacherCode = Convert.ToInt32(_teacherCode.Split(' ')[2]);
 
-            string lname = _studentFullName.Split(',')[0];
-            string fname = _studentFullName.Split(' ')[1];
+            if (_studentFullName != null)
+            {
+                string lname = _studentFullName.Split(',')[0];
+                string fname = _studentFullName.Split(' ')[1];
 
-            if (proxy.UpdateStudent(Email.EmailAddress, fname, lname, student))
-            {
-                AddStudentPopUp pop = new AddStudentPopUp(_studFirstNameText + " " + _studLastNameText + " Successfully Updated");
-                pop.Show();
-                _delRefreshListMethod.DynamicInvoke();
-            }
-            else
-            {
-                AddStudentPopUp pop = new AddStudentPopUp("Duplicate/Invalid Student");
-                pop.Show();
+                if (proxy.UpdateStudent(Email.EmailAddress, fname, lname, student))
+                {
+                    MessagePopUp pop = new MessagePopUp(_studFirstNameText + " " + _studLastNameText + " Successfully Updated");
+                    pop.Show();
+                    _delRefreshListMethod.DynamicInvoke();
+                }
+                else
+                {
+                    MessagePopUp pop = new MessagePopUp("Duplicate/Invalid Student");
+                    pop.Show();
+                }
             }
         }
         public void GetStudentInfo()

@@ -31,7 +31,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                 Console.WriteLine("Error  in Login");
                 return false;
             }
-            return found;    
+            return found;
         }
 
         //validate user's email for account creation
@@ -93,7 +93,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             string accessCode = null;
             Random rnd = new Random();
 
-            for(int i = 0; i < 6; i++)
+            for (int i = 0; i < 6; i++)
             {
                 accessCode += Convert.ToChar(rnd.Next(65, 91));
             }
@@ -230,7 +230,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     teacheraccount teacher = new teacheraccount();
                     teacher.UserID = user.UserID;
                     if (username == null)
-                        username = email; 
+                        username = email;
                     teacher.UserName = username;
                     teacher.AccessCode = code;
 
@@ -261,7 +261,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     if (username == null)
                         username = email;
                     parent.UserName = username;
-                        
+
                     db.parentaccounts.Add(parent);
                     db.SaveChanges();
                 }
@@ -347,7 +347,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     var student = db.students.First((s) => s.TeacherCode == teachercode);
 
                     //check if parent already has student
-                    var result = db.parenttostudents.Where(p => p.ParentID == parent.ParentID && 
+                    var result = db.parenttostudents.Where(p => p.ParentID == parent.ParentID &&
                                                             p.StudentID == student.StudentID).FirstOrDefault();
                     if (result != null)
                     {
@@ -412,13 +412,13 @@ namespace SchoolToHomeBehaviorTracking_Server
 
             try
             {
-                using (test_dbEntities db = new test_dbEntities()) 
+                using (test_dbEntities db = new test_dbEntities())
                 {
                     var user = db.users.First((e) => e.Email == email);
                     var teacher = db.teacheraccounts.First((t) => t.UserID == user.UserID);
                     var students = db.students.ToList();
 
-                    foreach(var s in students)
+                    foreach (var s in students)
                     {
                         if (s.TeacherID == teacher.TeacherID)
                             studentsList.Add(s.LastName + ", " + s.FirstName);
@@ -643,7 +643,7 @@ namespace SchoolToHomeBehaviorTracking_Server
         {
             try
             {
-                if(fname.Length < 1 || lname.Length < 1)
+                if (fname.Length < 1 || lname.Length < 1)
                     return false;
 
                 using (test_dbEntities db = new test_dbEntities())
@@ -722,11 +722,11 @@ namespace SchoolToHomeBehaviorTracking_Server
         {
             try
             {
-               using(test_dbEntities db = new test_dbEntities())
+                using (test_dbEntities db = new test_dbEntities())
                 {
                     var count = db.students.Count();
                     int teacherCode = db.students.Count() + 1000;
-                    
+
                     return teacherCode;
                 }
             }
@@ -914,6 +914,265 @@ namespace SchoolToHomeBehaviorTracking_Server
             {
                 Console.WriteLine("Error in edit student");
                 return false;
+            }
+        }
+
+        public List<string> GetTeacherForms(string category)
+        {
+            List<string> formList = new List<string>();
+            try
+            {
+
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var forms = db.forms.ToList();
+
+                    if (category == "Behavior")
+                    {
+                        foreach (var f in forms)
+                        {
+                            if (f.Category == "Behavior")
+                                formList.Add(f.FormName);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var f in forms)
+                        {
+                            if (f.Category != "Behavior" && f.Category != "Home")
+                                formList.Add(f.FormName);
+                        }
+                    }
+                }
+                formList.Sort();
+            }
+            catch
+            {
+                Console.WriteLine("Error in get teacher forms");
+            }
+            return formList;
+        }
+
+        public List<string> GetParentForms()
+        {
+            throw new NotImplementedException();
+        }
+
+        //add a tracking form to student   
+        //return true on success, false on failure                                                 
+        public bool AddFormToStudent(string form, string description, string fname, string lname)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var forms = db.forms.FirstOrDefault((f) => f.FormName == form);
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+
+                    studentform stof = new studentform();
+                    //custom form
+                    if (forms == null)
+                    {
+                        var f = db.forms.FirstOrDefault((x) => x.FormName == "Custom Behavior Tracking");
+                        stof.FormID = f.FormID;
+                        stof.Description = description;
+                    }
+                    else
+                    {
+                        //check if student already has form template
+                        var result = db.studentforms.Where(x => x.FormID == forms.FormID &&
+                                                            x.StudentID == student.StudentID
+                                                      && x.FormData == "Template").FirstOrDefault();
+                        if (result != null)
+                            return false;
+
+                        stof.FormID = forms.FormID;
+                    }
+                    stof.StudentID = student.StudentID;
+                    stof.FormName = form;
+                    stof.FormDate = DateTime.Now.ToString("MM/dd/yyyy");
+                    stof.FormData = "Template";
+
+                    db.studentforms.Add(stof);
+                    db.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in add form to student");
+                return false;
+            }
+        }
+
+        //return list of tracking forms for student by category (behavior, other)
+        public List<string> GetStudentForms(string fname, string lname, string category)
+        {
+            List<string> formList = new List<string>();
+            try
+            {
+
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == "Template");
+
+                    using (test_dbEntities database = new test_dbEntities())
+                    {
+                        if (category == "Behavior")
+                        {
+                            foreach (var f in forms)
+                            {
+                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category == "Behavior");
+                                if (form != null)
+                                    formList.Add(form.FormName);
+                            }
+                        }
+                        else if (category == "Other")
+                        {
+                            foreach (var f in forms)
+                            {
+                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category != "Behavior" && x.Category != "Home");
+                                if (form != null)
+                                    formList.Add(form.FormName);
+                            }
+                        }
+                    }
+                }
+                formList.Sort();
+            }
+            catch
+            {
+                Console.WriteLine("Error in get student forms");
+            }
+            return formList;
+        }
+
+        //remove a tracking form for student
+        //return true on success, false on failure
+        public bool RemoveForm(string form, string fname, string lname)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+
+                    studentform stof = new studentform();
+                    stof = (from s in db.studentforms
+                            where s.StudentID == student.StudentID && s.FormName == form
+                            select s).FirstOrDefault();
+
+                    db.studentforms.Remove(stof);
+                    db.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in remove student form");
+                return false;
+            }
+        }
+
+        //save student form data
+        //return true on success, false on failure
+        public bool SaveStudentForm(StudentFormData form)
+        {
+            try
+            {
+                SecureData encrypt = new SecureData();
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == form.StudentFName && s.LastName == form.StudentLName);
+                    var forms = db.forms.FirstOrDefault((f) => f.FormName == form.FormName);
+
+                    studentform studForm = new studentform();
+                    studForm.StudentID = student.StudentID;
+                    if (forms == null) //custom form
+                    {
+                        var f = db.forms.FirstOrDefault((x) => x.FormName == "Custom Behavior Tracking");
+                        studForm.FormID = f.FormID;
+                    }
+                    else
+                        studForm.FormID = forms.FormID;
+
+                    studForm.FormName = form.FormName;
+                    studForm.FormDate = DateTime.Now.ToString("MM/dd/yyyy");
+                    studForm.EndDate = form.EndDate;
+                    studForm.FormData = encrypt.Encrypt(form.Data);
+                    studForm.Shared = form.Shared;
+                    db.studentforms.Add(studForm);
+                    db.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                Console.WriteLine("Error in Save Student Form");
+                return false;
+            }
+        }
+
+        //return list of daily behavior tracking forms for student
+        //only return list of forms that haven't been completed for the day
+        public List<string> GetStudentDailyForms(string fname, string lname)
+        {
+            List<string> forms = new List<string>();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var studForms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == "Template");
+
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        var completeForms = db2.studentforms.Where((c) => c.StudentID == student.StudentID && c.FormData != "Template");
+
+                        using (test_dbEntities db3 = new test_dbEntities())
+                        {
+                            foreach (var x in studForms)
+                            {
+                                var formTemplate = db3.forms.First((y) => y.FormID == x.FormID);
+                                if (formTemplate.Category == "Behavior")
+                                    forms.Add(x.FormName);
+                            }
+                            foreach (var c in completeForms)
+                            {
+                                if (c.FormData != "Template" && c.FormDate == DateTime.Now.ToString("MM/dd/yyyy"))
+                                    forms.Remove(c.FormName);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in get student daily forms");
+            }
+            return forms;
+        }
+
+        //get description of student form
+        public string GetStudentFormDescription(string fname, string lname, string formName)
+        {
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var studForms = db.studentforms.First((f) => f.StudentID == student.StudentID && f.FormName == formName);
+
+                    return studForms.Description;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error in get student form description");
+                return null;
             }
         }
     }

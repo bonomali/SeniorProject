@@ -39,7 +39,7 @@
         <TextBlock x:Name="loginText" Grid.Column="5" Grid.Row="2" Grid.ColumnSpan="4"
                 Text="{Binding Path=LastAccess, Mode=TwoWay}" HorizontalAlignment="Right" Margin="3,0"/>
 
-        <TextBlock x:Name="menuHeaderText" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" 
+        <TextBlock x:Name="menuHeaderText" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="2" 
                    Text="{Binding Path=MenuHeader, Mode=TwoWay}" FontSize="18" Margin="10,0"/>
 
         <StackPanel x:Name="addStudentForm" Visibility="Collapsed" 
@@ -51,12 +51,22 @@
                    Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
             <local:EditStudentForm x:Name="editStudentUC"></local:EditStudentForm>
         </StackPanel>
-        
+
+        <StackPanel x:Name="trackingForms" Visibility="Collapsed" 
+                   Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
+            <local:TeacherForms x:Name="trackingFormsUC"></local:TeacherForms>
+        </StackPanel>
+
         <StackPanel x:Name="listStudents" Visibility="Collapsed" 
                    Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
             <local:ListStudents x:Name="listStudentsUC"></local:ListStudents>
         </StackPanel>
-        
+
+        <StackPanel x:Name="listForms" Visibility="Collapsed" 
+                   Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="6" Grid.RowSpan="6">
+            <local:ListForms x:Name="listFormsUC"></local:ListForms>
+        </StackPanel>
+
         <StackPanel x:Name="Panel1" Visibility="Collapsed" Grid.Column="2" Grid.Row="4" Grid.ColumnSpan="5" Orientation="Horizontal">
             <TextBlock x:Name="text1Text" HorizontalAlignment="Right"
                 Text="{Binding Path=Text1Text, Mode=TwoWay}" Margin="10,0,0,0"/>
@@ -87,7 +97,7 @@
                     <MenuItem x:Name="dropStudent" Header="Drop Student" Margin="2,10" FontSize="14" Click="dropStudent_Click"/>
                     <MenuItem x:Name="editStudent" Header="Edit Student" Margin="2,10" FontSize="14" Click="editStudent_Click"/>
                 </MenuItem>
-                <MenuItem x:Name="forms" Header="_Forms" Margin="2,10" FontSize="14">
+                <MenuItem x:Name="forms" Header="_Forms" Margin="2,10" FontSize="14" MinWidth="100">
                     <MenuItem x:Name="addForm" Header="Add Form" Margin="2,10" FontSize="14" Click="addForm_Click"/>
                     <MenuItem x:Name="deleteForm" Header="Delete Form" Margin="2,10" FontSize="14" Click="deleteForm_Click"/>
                 </MenuItem>
