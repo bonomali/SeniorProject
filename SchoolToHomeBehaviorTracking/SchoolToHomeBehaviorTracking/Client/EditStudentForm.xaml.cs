@@ -1,27 +1,16 @@
-﻿using SchoolToHomeBehaviorTracking_Client;
-using SchoolToHomeBehaviorTracking_Interface;
+﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for EditStudentForm.xaml
+    /// Form for editing student information in teacher account
     /// </summary>
     public partial class EditStudentForm : UserControl
     {
@@ -37,23 +26,23 @@ namespace SchoolToHomeBehaviorTracking_Client
         private string _par2AddressText;
         private string _teacherCode;
         private string _studentFullName;
+
         private Delegate _delRefreshListMethod;
+        private Delegate _delExitMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public Delegate CallingRefreshListMethod
         {
             set { _delRefreshListMethod = value; }
         }
 
-        public EditStudentForm()
+        public Delegate CallingExitMethod
         {
-            InitializeComponent();
-            this.DataContext = this;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            set { _delExitMethod = value; }
         }
 
         public string StudFirstNameText
@@ -171,14 +160,24 @@ namespace SchoolToHomeBehaviorTracking_Client
             get { return _studentFullName; }
             set { _studentFullName = value; }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public EditStudentForm()
+        {
+            InitializeComponent();
+            this.DataContext = this;
+        }
+
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             StudentData student = new StudentData();
+
+            //data from form saved to studentdata object
             student.FirstName = studFirstNameText.Text;
             student.LastName = studLastNameText.Text;
             student.BirthDate = studBirthDateText.Text;
@@ -189,7 +188,8 @@ namespace SchoolToHomeBehaviorTracking_Client
             student.Parent2Name = par2NameText.Text;
             student.Parent2Phone = par2PhoneText.Text;
             student.Parent2Address = par2AddressText.Text;
-            if(_teacherCode != null)
+
+            if (_teacherCode != null)
                 student.TeacherCode = Convert.ToInt32(_teacherCode.Split(' ')[2]);
 
             if (_studentFullName != null)
@@ -210,6 +210,8 @@ namespace SchoolToHomeBehaviorTracking_Client
                 }
             }
         }
+
+        //get information for student from db
         public void GetStudentInfo()
         {
             if (_studentFullName != null)
@@ -217,13 +219,9 @@ namespace SchoolToHomeBehaviorTracking_Client
                 string lname = _studentFullName.Split(',')[0];
                 string fname = _studentFullName.Split(' ')[1];
 
-                ChannelFactory<IWCFService> channelFactory = new
-                   ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-                IWCFService proxy = channelFactory.CreateChannel();
-
                 StudentData stud = proxy.GetStudent(fname, lname);
 
+                //display student information from db on form
                 studFirstNameText.Text = stud.FirstName;
                 studLastNameText.Text = stud.LastName;
                 studBirthDateText.Text = stud.BirthDate;
@@ -236,6 +234,11 @@ namespace SchoolToHomeBehaviorTracking_Client
                 par2AddressText.Text = stud.Parent2Address;
                 teacherCode.Text = "Teacher Code: " + stud.TeacherCode.ToString();
             }
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            _delExitMethod.DynamicInvoke();
         }
     }
 }

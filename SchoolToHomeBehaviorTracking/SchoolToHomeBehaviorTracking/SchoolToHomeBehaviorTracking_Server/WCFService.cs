@@ -1,17 +1,23 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
-using System.ServiceModel;
 using System.Text;
 
 namespace SchoolToHomeBehaviorTracking_Server
 {
     public class WCFService : IWCFService
     {
+        private static string BEHAVIORFORMS = "Behavior";
+        private static string HOMEFORMS = "Home";
+        private static string HOMETRACKINGFORM = "Home Tracking Form";
+        private static string PROGRESSREPORTFORM = "Progress Report Form";
+        private static string OTHERFORMS = "Other";
+        private static string CUSTOMFORM = "Custom Behavior Tracking";
+        private static string TEMPLATE = "Template";
+        private static string DATEFORMAT = "MM/dd/yyyy";
+
         //validate user account by email and password
         //return true on success, false on failure
         public bool Login(string email, string password)
@@ -28,7 +34,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error  in Login");
                 return false;
             }
             return found;
@@ -80,7 +85,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error creating account");
                 return false;
             }
             return success;
@@ -111,7 +115,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Access Code");
+                return null;
             }
             return accessCode;
         }
@@ -131,7 +135,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Reset Password");
                 return false;
             }
         }
@@ -153,7 +156,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Verify Access Code");
+                return false;
             }
             return verified;
         }
@@ -175,7 +178,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Update Password");
             }
         }
 
@@ -192,7 +194,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Validate Teacher Access Code");
                 return false;
             }
             return true;
@@ -211,7 +212,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Validate ParentTeacher Code");
                 return false;
             }
             return true;
@@ -240,7 +240,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Add Teacher Account");
                 return false;
             }
             return true;
@@ -268,7 +267,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Add Parent Account");
                 return false;
             }
             return true;
@@ -288,7 +286,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in check existing admin account");
                 return false;
             }
             return true;
@@ -308,7 +305,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in check existing teacher account");
                 return false;
             }
             return true;
@@ -328,7 +324,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in check existing parent account");
                 return false;
             }
             return true;
@@ -360,11 +355,13 @@ namespace SchoolToHomeBehaviorTracking_Server
 
                     db.parenttostudents.Add(pTos);
                     db.SaveChanges();
+
+                    //add home tracking form to student
+                    AddFormToStudent(HOMETRACKINGFORM, null, student.FirstName, student.LastName);
                 }
             }
             catch
             {
-                Console.WriteLine("Error in add student to parent account");
                 return false;
             }
             return true;
@@ -399,10 +396,8 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error getting student data");
+                return null;
             }
-
-            return studentData;
         }
 
         //return a list of students
@@ -428,14 +423,13 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error getting list of students");
             }
-
             return studentsList;
         }
 
         //encrypt user's password
-        static string EncryptPassword(string password)
+        //return encrypted password
+        static private string EncryptPassword(string password)
         {
             using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
             {
@@ -445,6 +439,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //return teacher's username
         public string GetTeacherUserName(string email)
         {
             try
@@ -463,6 +458,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //return parent's username
         public string GetParentUserName(string email)
         {
             try
@@ -481,6 +477,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //return admin's last access date
         public string GetAdminAccessDate(string email)
         {
             try
@@ -499,6 +496,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //return teacher's last access date
         public string GetTeacherAccessDate(string email)
         {
             try
@@ -517,6 +515,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //return parent's last access date
         public string GetParentAccessDate(string email)
         {
             try
@@ -535,6 +534,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
         }
 
+        //update admin's last access date
         public void UpdateAdminLastAccess(string email)
         {
             try
@@ -551,10 +551,10 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update admin last access");
             }
         }
 
+        //update teacher's last access date
         public void UpdateTeacherLastAccess(string email)
         {
             try
@@ -571,10 +571,10 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update teacher last access");
             }
         }
 
+        //update parent's last access date
         public void UpdateParentLastAccess(string email)
         {
             try
@@ -591,7 +591,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update parent last access");
             }
         }
 
@@ -632,7 +631,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in add teacher");
                 return -1;
             }
         }
@@ -650,6 +648,21 @@ namespace SchoolToHomeBehaviorTracking_Server
                 {
                     var accessCode = db.accesscodes.First((a) => a.FullName == fname + " " + lname);
                     var teacher = db.teacheraccounts.First((t) => t.AccessCode == accessCode.AccessCode1);
+
+                    //delete students from parent accounts
+                    var students = db.students.Where((s) => s.TeacherID == teacher.TeacherID);
+
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        foreach (var x in students)
+                        {
+                            var toDelete = db2.parenttostudents.Where((y) => y.StudentID == x.StudentID);
+                            foreach (var parent in toDelete)
+                                db2.parenttostudents.Remove(parent);
+                        }
+                        db2.SaveChanges();
+                    }
+
                     teacher.UserID = teacher.UserID * 1000000;   //manipulate user id to invalidate teacher account
                     db.SaveChanges();
 
@@ -672,7 +685,6 @@ namespace SchoolToHomeBehaviorTracking_Server
                 }
                 catch
                 {
-                    Console.WriteLine("Error in remove teacher");
                     return false;
                 }
             }
@@ -693,7 +705,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update email");
                 return false;
             }
             return true;
@@ -713,26 +724,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in access code lookup");
-                return -1;
-            }
-        }
-
-        public int GenerateTeacherCode()
-        {
-            try
-            {
-                using (test_dbEntities db = new test_dbEntities())
-                {
-                    var count = db.students.Count();
-                    int teacherCode = db.students.Count() + 1000;
-
-                    return teacherCode;
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Error in add teacher");
                 return -1;
             }
         }
@@ -757,6 +748,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     }
 
                     student s = new student();
+
                     s.TeacherID = teacher.TeacherID;
                     s.FirstName = stud.FirstName;
                     s.LastName = stud.LastName;
@@ -769,6 +761,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     s.ParentGuardian2Phone = stud.Parent2Phone;
                     s.ParentGuardian2Address = stud.Parent2Address;
 
+                    //generate teacher code
                     Random rand = new Random();
                     bool codeAssigned = false;
                     int teacherCode = -1;
@@ -792,7 +785,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in add student");
                 return -1;
             }
         }
@@ -815,7 +807,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update teacher username");
                 return false;
             }
             return true;
@@ -839,13 +830,13 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in update parent username");
                 return false;
             }
             return true;
         }
 
         //Delete a student
+        //Also deletes parent account if parent has no other students
         //Return true on success, false on failure
         public bool DeleteStudent(string email, string fname, string lname)
         {
@@ -858,6 +849,26 @@ namespace SchoolToHomeBehaviorTracking_Server
                     var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname
                                                         && s.TeacherID == teacher.TeacherID);
 
+                    //get list of parent to student accounts for student
+                    var ptos = db.parenttostudents.Where((id) => id.StudentID == student.StudentID);
+
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        foreach (var p in ptos)
+                        {
+                            //get parent
+                            var parent = db2.parentaccounts.FirstOrDefault((x) => x.ParentID == p.ParentID);
+
+                            using (test_dbEntities db3 = new test_dbEntities())
+                            {
+                                var delete = db3.parenttostudents.First((i) => i.ParentID == p.ParentID && i.StudentID ==
+                                                                            student.StudentID);
+                                db3.parenttostudents.Remove(delete);
+                                db3.SaveChanges();
+                            }
+                        }
+                        db2.SaveChanges();
+                    }
                     db.students.Remove(student);
                     db.SaveChanges();
 
@@ -866,11 +877,12 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in delete student");
                 return false;
             }
         }
 
+        //Update student information
+        //Return true on success, false on failure
         public bool UpdateStudent(string email, string fname, string lname, StudentData stud)
         {
             try
@@ -912,11 +924,11 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in edit student");
                 return false;
             }
         }
 
+        //return list of teacher behavior traking forms by category (behavior or other)
         public List<string> GetTeacherForms(string category)
         {
             List<string> formList = new List<string>();
@@ -927,35 +939,72 @@ namespace SchoolToHomeBehaviorTracking_Server
                 {
                     var forms = db.forms.ToList();
 
-                    if (category == "Behavior")
+                    if (category == BEHAVIORFORMS)
                     {
                         foreach (var f in forms)
                         {
-                            if (f.Category == "Behavior")
+                            if (f.Category == BEHAVIORFORMS)
                                 formList.Add(f.FormName);
                         }
                     }
-                    else
+                    else if (category == OTHERFORMS)
                     {
                         foreach (var f in forms)
                         {
-                            if (f.Category != "Behavior" && f.Category != "Home")
+                            if (f.Category != BEHAVIORFORMS && f.Category != HOMEFORMS)
                                 formList.Add(f.FormName);
                         }
+                    }
+                    else  //return all forms
+                    {
+                        foreach (var f in forms)
+                            formList.Add(f.FormName);
                     }
                 }
                 formList.Sort();
             }
             catch
             {
-                Console.WriteLine("Error in get teacher forms");
             }
             return formList;
         }
 
-        public List<string> GetParentForms()
+        //return list of child's daily home tracking forms
+        public List<string> GetChildDailyForms(string fname, string lname)
         {
-            throw new NotImplementedException();
+            List<string> forms = new List<string>();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var studForms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == TEMPLATE);
+
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        var completeForms = db2.studentforms.Where((c) => c.StudentID == student.StudentID && c.FormData != TEMPLATE);
+
+                        using (test_dbEntities db3 = new test_dbEntities())
+                        {
+                            foreach (var x in studForms)
+                            {
+                                var formTemplate = db3.forms.First((y) => y.FormID == x.FormID);
+                                if (formTemplate.Category == HOMEFORMS)
+                                    forms.Add(x.FormName);
+                            }
+                            foreach (var c in completeForms)
+                            {
+                                if (c.FormData != TEMPLATE && c.FormDate == DateTime.Now.ToString(DATEFORMAT))
+                                    forms.Remove(c.FormName);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return forms;
         }
 
         //add a tracking form to student   
@@ -966,23 +1015,28 @@ namespace SchoolToHomeBehaviorTracking_Server
             {
                 using (test_dbEntities db = new test_dbEntities())
                 {
-                    var forms = db.forms.FirstOrDefault((f) => f.FormName == form);
+                    var forms = db.forms.FirstOrDefault((f) => f.FormName == form && f.FormName != CUSTOMFORM);
                     var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
 
                     studentform stof = new studentform();
                     //custom form
                     if (forms == null)
                     {
-                        var f = db.forms.FirstOrDefault((x) => x.FormName == "Custom Behavior Tracking");
+                        var f = db.forms.FirstOrDefault((x) => x.FormName == CUSTOMFORM);
                         stof.FormID = f.FormID;
                         stof.Description = description;
+
+                        //check that custom form with same name doesn't already exist
+                        var result = db.studentforms.FirstOrDefault((y) => y.FormName == form);
+                        if (result != null)
+                            return false;
                     }
                     else
                     {
                         //check if student already has form template
                         var result = db.studentforms.Where(x => x.FormID == forms.FormID &&
                                                             x.StudentID == student.StudentID
-                                                      && x.FormData == "Template").FirstOrDefault();
+                                                      && x.FormData == TEMPLATE).FirstOrDefault();
                         if (result != null)
                             return false;
 
@@ -990,8 +1044,8 @@ namespace SchoolToHomeBehaviorTracking_Server
                     }
                     stof.StudentID = student.StudentID;
                     stof.FormName = form;
-                    stof.FormDate = DateTime.Now.ToString("MM/dd/yyyy");
-                    stof.FormData = "Template";
+                    stof.FormDate = DateTime.Now.ToString(DATEFORMAT);
+                    stof.FormData = TEMPLATE;
 
                     db.studentforms.Add(stof);
                     db.SaveChanges();
@@ -1001,7 +1055,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in add form to student");
                 return false;
             }
         }
@@ -1016,27 +1069,33 @@ namespace SchoolToHomeBehaviorTracking_Server
                 using (test_dbEntities db = new test_dbEntities())
                 {
                     var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
-                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == "Template");
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == TEMPLATE);
 
                     using (test_dbEntities database = new test_dbEntities())
                     {
-                        if (category == "Behavior")
+                        if (category == BEHAVIORFORMS)
                         {
                             foreach (var f in forms)
                             {
-                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category == "Behavior");
+                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category == BEHAVIORFORMS);
                                 if (form != null)
-                                    formList.Add(form.FormName);
+                                    formList.Add(f.FormName);
                             }
                         }
-                        else if (category == "Other")
+                        else if (category == OTHERFORMS)
                         {
                             foreach (var f in forms)
                             {
-                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category != "Behavior" && x.Category != "Home");
+                                var form = database.forms.FirstOrDefault((x) => x.FormID == f.FormID && x.Category != BEHAVIORFORMS
+                                                                            && x.Category != HOMEFORMS);
                                 if (form != null)
-                                    formList.Add(form.FormName);
+                                    formList.Add(f.FormName);
                             }
+                        }
+                        else  //return all forms for student
+                        {
+                            foreach (var f in forms)
+                                formList.Add(f.FormName);
                         }
                     }
                 }
@@ -1044,7 +1103,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in get student forms");
             }
             return formList;
         }
@@ -1072,7 +1130,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in remove student form");
                 return false;
             }
         }
@@ -1091,19 +1148,22 @@ namespace SchoolToHomeBehaviorTracking_Server
 
                     studentform studForm = new studentform();
                     studForm.StudentID = student.StudentID;
+
                     if (forms == null) //custom form
                     {
-                        var f = db.forms.FirstOrDefault((x) => x.FormName == "Custom Behavior Tracking");
+                        var f = db.forms.FirstOrDefault((x) => x.FormName == CUSTOMFORM);
                         studForm.FormID = f.FormID;
                     }
                     else
                         studForm.FormID = forms.FormID;
 
                     studForm.FormName = form.FormName;
-                    studForm.FormDate = DateTime.Now.ToString("MM/dd/yyyy");
+                    studForm.FormDate = DateTime.Now.ToString(DATEFORMAT);
                     studForm.EndDate = form.EndDate;
                     studForm.FormData = encrypt.Encrypt(form.Data);
                     studForm.Shared = form.Shared;
+                    studForm.BehaviorRating = form.BehaviorRating;
+
                     db.studentforms.Add(studForm);
                     db.SaveChanges();
                 }
@@ -1111,7 +1171,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in Save Student Form");
                 return false;
             }
         }
@@ -1126,23 +1185,23 @@ namespace SchoolToHomeBehaviorTracking_Server
                 using (test_dbEntities db = new test_dbEntities())
                 {
                     var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
-                    var studForms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == "Template");
+                    var studForms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormData == TEMPLATE);
 
                     using (test_dbEntities db2 = new test_dbEntities())
                     {
-                        var completeForms = db2.studentforms.Where((c) => c.StudentID == student.StudentID && c.FormData != "Template");
+                        var completeForms = db2.studentforms.Where((c) => c.StudentID == student.StudentID && c.FormData != TEMPLATE);
 
                         using (test_dbEntities db3 = new test_dbEntities())
                         {
                             foreach (var x in studForms)
                             {
                                 var formTemplate = db3.forms.First((y) => y.FormID == x.FormID);
-                                if (formTemplate.Category == "Behavior")
+                                if (formTemplate.Category == BEHAVIORFORMS)
                                     forms.Add(x.FormName);
                             }
                             foreach (var c in completeForms)
                             {
-                                if (c.FormData != "Template" && c.FormDate == DateTime.Now.ToString("MM/dd/yyyy"))
+                                if (c.FormData != TEMPLATE && c.FormDate == DateTime.Now.ToString(DATEFORMAT))
                                     forms.Remove(c.FormName);
                             }
                         }
@@ -1151,7 +1210,6 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in get student daily forms");
             }
             return forms;
         }
@@ -1171,9 +1229,202 @@ namespace SchoolToHomeBehaviorTracking_Server
             }
             catch
             {
-                Console.WriteLine("Error in get student form description");
                 return null;
             }
+        }
+
+        //return a list of children for parent account
+        public List<string> ListChildren(string email)
+        {
+            List<string> childrenList = new List<string>();
+
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var user = db.users.First((e) => e.Email == email);
+                    var parent = db.parentaccounts.First((p) => p.UserID == user.UserID);
+                    var studentIDs = (from x in db.parenttostudents
+                                      where x.ParentID == parent.ParentID
+                                      select x.StudentID);
+
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        foreach (var id in studentIDs)
+                        {
+                            var student = db2.students.First((y) => y.StudentID == id);
+                            childrenList.Add(student.LastName + ", " + student.FirstName);
+                        }
+                    }
+                    childrenList.Sort();
+                }
+            }
+            catch
+            {
+            }
+            return childrenList;
+        }
+
+        //return a completed form for student
+        //returns form completed that day or null if no form exists
+        public StudentFormData GetDailyForm(string formName, string fname, string lname)
+        {
+            StudentFormData targetForm = new StudentFormData();
+            try
+            {
+                string date = DateTime.Now.ToString(DATEFORMAT);
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var form = db.studentforms.FirstOrDefault((f) => f.StudentID == student.StudentID &&
+                                               f.FormName == formName && f.Shared == true && f.FormData != TEMPLATE
+                                               && f.FormDate == date);
+                    //no form exists
+                    if (form == null)
+                        targetForm = null;
+                    else
+                    {
+                        SecureData decrypt = new SecureData();
+
+                        targetForm.FormName = form.FormName;
+                        targetForm.Data = decrypt.Decrypt(form.FormData);
+                        targetForm.StudentFName = student.FirstName;
+                        targetForm.StudentLName = student.LastName;
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return targetForm;
+        }
+
+        //get list of forms by type for a student for teacher viewing
+        public List<StudentFormData> GetStudentFormsListByType(string form, string fname, string lname)
+        {
+            List<StudentFormData> trackingForms = new List<StudentFormData>();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == form
+                                                            && f.FormData != TEMPLATE);
+
+                    foreach (var x in forms)
+                    {
+                        StudentFormData f = new StudentFormData();
+                        f.FormName = x.FormName;
+                        f.FormDate = x.FormDate;
+                        f.EndDate = x.EndDate;
+                        f.FormID = x.StudentFormID.ToString();
+                        f.Shared = x.Shared;
+
+                        if (x.FormName == HOMETRACKINGFORM)
+                        {
+                            if (x.Shared)
+                                trackingForms.Add(f);
+                        }
+                        else
+                            trackingForms.Add(f);
+                    }
+                    trackingForms.OrderBy(x => x.FormDate);
+                }
+            }
+            catch
+            {
+            }
+            return trackingForms;
+        }
+
+        //get list of forms by type for a child for parent viewing
+        public List<StudentFormData> GetChildFormsListByType(string form, string fname, string lname)
+        {
+            List<StudentFormData> trackingForms = new List<StudentFormData>();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == form
+                                                            && f.FormData != TEMPLATE);
+
+                    foreach (var x in forms)
+                    {
+                        if (x.FormName == HOMETRACKINGFORM || (x.FormName == PROGRESSREPORTFORM && x.Shared))
+                        {
+                            StudentFormData f = new StudentFormData();
+                            f.FormName = x.FormName;
+                            f.FormDate = x.FormDate;
+                            f.FormID = x.StudentFormID.ToString();
+                            f.Shared = x.Shared;
+
+                            trackingForms.Add(f);
+                        }
+                    }
+                    trackingForms.OrderBy(x => x.FormDate);
+                }
+            }
+            catch
+            {
+            }
+            return trackingForms;
+        }
+
+        //return a form by id for teacher viewing
+        public StudentFormData GetTeacherViewableFormByID(string formID)
+        {
+            StudentFormData targetForm = new StudentFormData();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    int id = Convert.ToInt32(formID);
+                    var form = db.studentforms.First((f) => f.StudentFormID == id);
+
+                    SecureData decrypt = new SecureData();
+                    targetForm.FormName = form.FormName;
+                    targetForm.Shared = form.Shared;
+                    targetForm.Data = decrypt.Decrypt(form.FormData);
+
+                    if (targetForm.FormName == HOMETRACKINGFORM && !form.Shared)
+                        targetForm = null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return targetForm;
+        }
+
+        //return a form by id for parent viewing
+        public StudentFormData GetParentViewableFormByID(string formID)
+        {
+            StudentFormData targetForm = new StudentFormData();
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    int id = Convert.ToInt32(formID);
+                    var form = db.studentforms.First((f) => f.StudentFormID == id);
+
+                    SecureData decrypt = new SecureData();
+
+                    targetForm.FormName = form.FormName;
+                    targetForm.Shared = form.Shared;
+                    targetForm.Data = decrypt.Decrypt(form.FormData);
+
+                    if (targetForm.FormName == PROGRESSREPORTFORM && !form.Shared)
+                        targetForm = null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return targetForm;
         }
     }
 }

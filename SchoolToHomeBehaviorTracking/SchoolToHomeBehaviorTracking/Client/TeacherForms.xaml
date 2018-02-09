@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
-                    mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-             d:DesignHeight="550" d:DesignWidth="600">
+             mc:Ignorable="d" FontSize="14" FontFamily="Lucida Sans Unicode"
+             d:DesignHeight="550" d:DesignWidth="700" Background="#9dd4c5">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -32,76 +32,85 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="12"
-                      VerticalScrollBarVisibility="Auto" MaxHeight="350">
-            <StackPanel Orientation="Vertical">
+        <ScrollViewer x:Name="form" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="600" MaxHeight="400" Margin="0,14,0,-14">
+            <StackPanel Orientation="Vertical" Margin="10,0">
                 <StackPanel Margin="5,5,100,5">
-                    <TextBlock Text="{Binding Path=FormName, Mode=TwoWay}" FontSize="16"/>
+                    <TextBlock Text="{Binding Path=FormName, Mode=TwoWay}" FontSize="18"/>
+                    <TextBlock x:Name="previewWarning" Text="Preview Only. Do Not Complete Form For Student." FontSize="18"
+                               Foreground="IndianRed" HorizontalAlignment="Center" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <!--************************************Custom Form*****************************-->
-                <StackPanel x:Name="customFormName" Margin="5,5,100,5" Visibility="Collapsed">
+                <StackPanel x:Name="addCustomForm" Margin="18,5,100,5" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Name of Form: " FontSize="14" Margin="70,5,0,5" TextAlignment="Right"/>
-                        <TextBox Text="{Binding Path=FormName, Mode=TwoWay}" FontSize="14" MinWidth="200" Margin="0 5,0,5"/>
+                        <TextBlock Text="Name of Form: " FontSize="18" Margin="55,5,0,5" TextAlignment="Right"/>
+                        <TextBox Text="{Binding Path=FormName, Mode=TwoWay}" FontSize="18" Width="250" Margin="0 5,0,5"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Description of Behavior: " FontSize="14" />
-                        <TextBox Text="{Binding Path=BehaviorDescription, Mode=TwoWay}" FontSize="14" MinWidth="200" Margin="0,0,0,20"
+                        <TextBlock Text="Description of Behavior: " FontSize="16" />
+                        <TextBox Text="{Binding Path=BehaviorDescription, Mode=TwoWay}" TextAlignment="Left" FontSize="14" Width="250" Margin="0,0,0,20"
                                  TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" MinHeight="40"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="displayCustomForm" Margin="5,5,100,5" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Description of Behavior: " FontSize="16" />
+                        <TextBlock Text="{Binding Path=BehaviorDescription, Mode=TwoWay}" TextAlignment="Left" FontSize="14" Margin="0,0,0,20"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Student Info*****************************-->
                 <StackPanel x:Name="StudentInfo">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="studName" HorizontalAlignment="Right"
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="studName" HorizontalAlignment="Right"
                 Text="Student Name: " Margin="5,5"/>
-                    <TextBox x:Name="studNameText" HorizontalAlignment="Left" MinWidth="120" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=StudentNameText, Mode=TwoWay}"
+                        <TextBox x:Name="studNameText" HorizontalAlignment="Left" Width="250"
+                    Text="{Binding Path=StudentNameText, Mode=TwoWay}"
                      Margin="0,5"/>
 
-                    <TextBlock x:Name="studGrade" HorizontalAlignment="Right"
-                        Text="Grade: " Margin="30,5,0,5"/>
-                    <TextBox x:Name="studGradeText" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=StudentGradeText, Mode=TwoWay}"
+                        <TextBlock x:Name="studGrade" HorizontalAlignment="Right"
+                        Text="Grade: " Margin="45,5,0,5"/>
+                        <TextBox x:Name="studGradeText" HorizontalAlignment="Left" Width="50"
+                        Text="{Binding Path=StudentGradeText, Mode=TwoWay}"
                      Margin="0,5"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="teacherName" HorizontalAlignment="Right"
-                        Text="Teacher Name: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="teacherNameText" HorizontalAlignment="Left" MinWidth="124" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TeacherNameText, Mode=TwoWay}"
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="teacherName" HorizontalAlignment="Right"
+                        Text="Teacher Name: " Margin="7,5,0,5"/>
+                        <TextBox x:Name="teacherNameText" HorizontalAlignment="Left" Width="253" 
+                     Text="{Binding Path=TeacherNameText, Mode=TwoWay}"
                     Margin="0,5"/>
-                </StackPanel>
+                    </StackPanel>
 
-                <StackPanel  Orientation="Horizontal">
-                    <TextBlock x:Name="completedByName" HorizontalAlignment="Right"
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock x:Name="completedByName" HorizontalAlignment="Right"
                 Text="Completed By: " Margin="5,5"/>
-                    <TextBox x:Name="completedByNameText" HorizontalAlignment="Left" MinWidth="124" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=CompletedByNameText, Mode=TwoWay}"
+                        <TextBox x:Name="completedByNameText" HorizontalAlignment="Left" Width="250" Height="25"
+                                 VerticalAlignment="Top"
+                     Text="{Binding Path=CompletedByNameText, Mode=TwoWay}"
                      Margin="0,5"/>
 
-                    <TextBlock x:Name="dateCompleted" HorizontalAlignment="Right"
-                        Text="Form Date: " Margin="30,5,0,5"/>
-                    <TextBox x:Name="dateCompletedText" HorizontalAlignment="Left" MinWidth="100" MaxHeight="20" 
+                        <TextBlock x:Name="dateCompleted" HorizontalAlignment="Right"
+                        Text="Form Date: " Margin="15,5,0,5"/>
+                        <TextBox x:Name="dateCompletedText" HorizontalAlignment="Left" Width="100" Height="25" 
                      VerticalAlignment="Top" Text="{Binding Path=DateCompletedText, Mode=TwoWay}"
                      Margin="0,5,0,30"/>
-                </StackPanel>
+                    </StackPanel>
                 </StackPanel>
                 <!--************************************Behavior Scale*****************************-->
                 <StackPanel x:Name="BehaviorScale">
-                <TextBlock Text="Overall Target Behavior Ranking" FontSize="14"/>
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton x:Name = "behaviorScale1" Margin = "10,5" Checked="behaviorScale1_Checked" GroupName="BehaviorScale" Content = "1"/>
-                    <RadioButton x:Name = "behaviorScale2" Margin = "10,5" Checked="behaviorScale2_Checked" GroupName="BehaviorScale" Content = "2"/>
-                    <RadioButton x:Name = "behaviorScale3" Margin = "10,5" Checked="behaviorScale3_Checked" GroupName="BehaviorScale" Content = "3"/>
-                    <RadioButton x:Name = "behaviorScale4" Margin = "10,5" Checked="behaviorScale4_Checked" GroupName="BehaviorScale" Content = "4"/>
-                    <RadioButton x:Name = "behaviorScale5" Margin = "10,5" Checked="behaviorScale5_Checked" GroupName="BehaviorScale" Content = "5"/>
-                    <RadioButton x:Name = "behaviorScale6" Margin = "10,5" Checked="behaviorScale6_Checked" GroupName="BehaviorScale" Content = "6"/>
-                    <RadioButton x:Name = "behaviorScale7" Margin = "10,5" Checked="behaviorScale7_Checked" GroupName="BehaviorScale" Content = "7"/>
-                    <RadioButton x:Name = "behaviorScale8" Margin = "10,5" Checked="behaviorScale8_Checked" GroupName="BehaviorScale" Content = "8"/>
-                    <RadioButton x:Name = "behaviorScale9" Margin = "10,5" Checked="behaviorScale9_Checked" GroupName="BehaviorScale" Content = "9"/>
-                    <RadioButton x:Name = "behaviorScale10" Margin = "10,5" Checked="behaviorScale10_Checked" GroupName="BehaviorScale" Content = "10"/>
+                    <TextBlock Text="Overall Target Behavior Rating" FontSize="14" Margin="5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name = "behaviorScale1" Margin = "10,5" Checked="behaviorScale1_Checked" GroupName="BehaviorScale" Content = "1"/>
+                        <RadioButton x:Name = "behaviorScale2" Margin = "10,5" Checked="behaviorScale2_Checked" GroupName="BehaviorScale" Content = "2"/>
+                        <RadioButton x:Name = "behaviorScale3" Margin = "10,5" Checked="behaviorScale3_Checked" GroupName="BehaviorScale" Content = "3"/>
+                        <RadioButton x:Name = "behaviorScale4" Margin = "10,5" Checked="behaviorScale4_Checked" GroupName="BehaviorScale" Content = "4"/>
+                        <RadioButton x:Name = "behaviorScale5" Margin = "10,5" Checked="behaviorScale5_Checked" GroupName="BehaviorScale" Content = "5"/>
+                        <RadioButton x:Name = "behaviorScale6" Margin = "10,5" Checked="behaviorScale6_Checked" GroupName="BehaviorScale" Content = "6"/>
+                        <RadioButton x:Name = "behaviorScale7" Margin = "10,5" Checked="behaviorScale7_Checked" GroupName="BehaviorScale" Content = "7"/>
+                        <RadioButton x:Name = "behaviorScale8" Margin = "10,5" Checked="behaviorScale8_Checked" GroupName="BehaviorScale" Content = "8"/>
+                        <RadioButton x:Name = "behaviorScale9" Margin = "10,5" Checked="behaviorScale9_Checked" GroupName="BehaviorScale" Content = "9"/>
+                        <RadioButton x:Name = "behaviorScale10" Margin = "10,5" Checked="behaviorScale10_Checked" GroupName="BehaviorScale" Content = "10"/>
                         <RadioButton x:Name = "behaviorScale11" Margin = "10,5" Checked="behaviorScale11_Checked" GroupName="BehaviorScale" Content = "11"
                                      Visibility="Collapsed"/>
                     </StackPanel>
@@ -109,143 +118,130 @@
                 <!--************************************Follow Directions*****************************-->
                 <StackPanel x:Name="followDirectionsForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of Directions Given: " Margin="25,5,0,5"/>
-                        <TextBox x:Name="totalGiven" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalGiven, Mode=TwoWay}"
+                        <TextBlock Text="Number of Directions Given: " Margin="27,5,0,5"/>
+                        <TextBox x:Name="totalAssigned" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
+                     VerticalAlignment="Top" Text="{Binding Path=Gross, Mode=TwoWay}"
                      Margin="0,5"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Number of Directions Followed: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="totalFollwed" HorizontalAlignment="Left" MinWidth="51" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalFollowed, Mode=TwoWay}"
+                        <TextBox x:Name="totalFollowed" HorizontalAlignment="Left" MinWidth="51" MaxHeight="20" 
+                     VerticalAlignment="Top" Text="{Binding Path=Net, Mode=TwoWay}"
                      Margin="0,5"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Completing Assignments*****************************-->
                 <StackPanel x:Name="CompletingAssignmentsForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of In-Class Assignments Given: " Margin="50,5,0,5"/>
-                        <TextBox x:Name="totalInClassAssigned" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalInClassAssigned, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBlock Text="Number of In-Class Assignments Given: " Margin="60,5,0,5"/>
+                        <TextBox x:Name="totalInClassAssigned" HorizontalAlignment="Left" Width="50"  
+                                 Text="{Binding Path=Gross, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of In-Class Assignments Completed: " Margin="20,5,0,5"/>
-                        <TextBox x:Name="totalInClassCompleted" HorizontalAlignment="Left" MinWidth="51" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalInClassCompleted, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBlock Text="Number of In-Class Assignments Completed: " Margin="23,5,0,5"/>
+                        <TextBox x:Name="totalInClassCompleted" HorizontalAlignment="Left" Width="51"
+                                 Text="{Binding Path=Net, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of Homework Assignments Given: " Margin="35,5,0,5"/>
-                        <TextBox x:Name="totalHomeworkAssigned" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalHomeworkAssigned, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBlock Text="Number of Homework Assignments Given: " Margin="41,5,0,5"/>
+                        <TextBox x:Name="totalHomeworkAssigned" HorizontalAlignment="Left" Width="50"
+                                 Text="{Binding Path=Gross1, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of Homework Assignments Completed: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="totalHomeworkCompleted" HorizontalAlignment="Left" MinWidth="51" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalHomeworkCompleted, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBlock Text="Number of Homework Assignments Completed: " Margin="4,5,0,5"/>
+                        <TextBox x:Name="totalHomeworkCompleted" HorizontalAlignment="Left" Width="51"
+                                 Text="{Binding Path=Net1, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Argumentative/Talking Back*****************************-->
                 <StackPanel x:Name="ArguingTalkingBackForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Number of Argumentative Incidents: " Margin="25,5,0,5"/>
-                        <TextBox x:Name="totalArguments" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalArguments, Mode=TwoWay}"
-                     Margin="0,5" />
+                        <TextBlock Text="Number of Argumentative Incidents: " Margin="5,5,0,5"/>
+                        <TextBox x:Name="totalArguments" HorizontalAlignment="Left" Width="50" 
+                                 Text="{Binding Path=Gross, Mode=TwoWay}" Margin="0,5" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Most Argumentative Times of Day: " Margin="35,5,0,5"/>
-                        <TextBox x:Name="argumentativeTimes" HorizontalAlignment="Left" MinWidth="200" MinHeight="60" 
-                     VerticalAlignment="Top" Text="{Binding Path=ArgumentativeTimes, Mode=TwoWay}"
-                     Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
-                     AcceptsReturn="True"/>
+                        <TextBlock Text="Most Argumentative Times of Day: " Margin="15,5,0,5"/>
+                        <TextBox x:Name="argumentativeTimes" HorizontalAlignment="Left" Width="200"
+                                 Text="{Binding Path=Net, Mode=TwoWay}" Margin="0,5" 
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Talking Out of Turn*****************************-->
                 <StackPanel x:Name="TalkingOutOfTurnForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Number Talking Out of Turn Incidents: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="totalTalkOutOfTurn" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalTalkOutOfTurn, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="totalTalkOutOfTurn" HorizontalAlignment="Left" Width="50" 
+                                 Text="{Binding Path=Gross, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Inattentivness*****************************-->
                 <StackPanel x:Name="InattentivenessForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Number of Inattentive/Off-Task Incidents: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="totalInattentive" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalInattentive, Mode=TwoWay}"
-                     Margin="0,5" />
+                        <TextBox x:Name="totalInattentive" HorizontalAlignment="Left" Width="50" 
+                                 Text="{Binding Path=Gross, Mode=TwoWay}" Margin="0,5" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Most Inattentive/Off-Task Times of Day: " Margin="15,5,0,5"/>
-                        <TextBox x:Name="inattentiveTimes" HorizontalAlignment="Left" MinWidth="200" MinHeight="60" 
-                     VerticalAlignment="Top" Text="{Binding Path=InattentiveTimes, Mode=TwoWay}"
-                     Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
-                     AcceptsReturn="True"/>
+                        <TextBox x:Name="inattentiveTimes" HorizontalAlignment="Left" Width="200" Height="60" 
+                     Text="{Binding Path=Net, Mode=TwoWay}" Margin="0,5" TextWrapping="Wrap" 
+                                 VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Custom Behavior Form*****************************-->
                 <StackPanel x:Name="CustomBehaviorForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Number Incidents: " Margin="84,5,0,5"/>
-                        <TextBox x:Name="totalIncidents" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=TotalIncidents, Mode=TwoWay}"
-                     Margin="0,5" />
+                        <TextBox x:Name="totalIncidents" HorizontalAlignment="Left" MinWidth="50" 
+                                 Text="{Binding Path=Gross, Mode=TwoWay}" Margin="0,5" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Times of Day Incidents Occur: " Margin="15,5,0,5"/>
-                        <TextBox x:Name="incidentTimes" HorizontalAlignment="Left" MinWidth="200" MinHeight="60" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentTimes, Mode=TwoWay}"
-                     Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
-                     AcceptsReturn="True"/>
+                        <TextBlock Text="Times of Day Incidents Occur: " Margin="5,5,0,5"/>
+                        <TextBox x:Name="incidentTimes" HorizontalAlignment="Left" Width="200" Height="60" 
+                                 Text="{Binding Path=Net, Mode=TwoWay}" Margin="0,5" TextWrapping="Wrap" 
+                                 VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Incident Form*****************************-->
                 <StackPanel x:Name="IncidentForm" Visibility="Collapsed">
                     <StackPanel  Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Right" Text="Incident Date: " Margin="5,5"/>
-                        <TextBox x:Name="incidentDate" HorizontalAlignment="Left" MinWidth="80" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentDate, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="incidentDate" HorizontalAlignment="Left" Width="80"
+                                 Text="{Binding Path=IncidentDate, Mode=TwoWay}" Margin="0,5"/>
 
                         <TextBlock HorizontalAlignment="Right" Text="Time of Incident: " Margin="30,5,0,5"/>
-                        <TextBox x:Name="incidentTime" HorizontalAlignment="Left" MinWidth="80" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentTime, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="incidentTime" HorizontalAlignment="Left" Width="80" 
+                                 Text="{Binding Path=IncidentTime, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Individuals Involved: " Margin="20,5,0,5"/>
-                        <TextBox x:Name="incidentInvolvement" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentPeopleInvolved, Mode=TwoWay}"
+                        <TextBlock Text="Individuals Involved: " Margin="22,5,0,5"/>
+                        <TextBox x:Name="incidentInvolvement" HorizontalAlignment="Left" Width="260" Height="40" 
+                    Text="{Binding Path=IncidentPeopleInvolved, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Incident Description: " Margin="20,5,0,5"/>
-                        <TextBox x:Name="incidentDescription" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentDescription, Mode=TwoWay}"
+                        <TextBox x:Name="incidentDescription" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=IncidentDescription, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="How Incident Handled: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="incidentHandledDescription" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=IncidentHandledDescription, Mode=TwoWay}"
+                        <TextBlock Text="How Incident Handled: " Margin="7,5,0,5"/>
+                        <TextBox x:Name="incidentHandledDescription" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=IncidentHandledDescription, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
@@ -254,104 +250,99 @@
                 <StackPanel x:Name="InterventionForm" Visibility="Collapsed">
                     <StackPanel  Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Right" Text="Intervention Start Date: " Margin="5,5"/>
-                        <TextBox x:Name="interventionStartDate" HorizontalAlignment="Left" MinWidth="80" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionStartDate, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="interventionStartDate" HorizontalAlignment="Left" Width="80" 
+                                 Text="{Binding Path=InterventionStartDate, Mode=TwoWay}"  Margin="0,5"/>
 
                         <TextBlock HorizontalAlignment="Right" Text="End/ReEvaluation Date: " Margin="30,5,0,5"/>
-                        <TextBox x:Name="interventionEndDate" HorizontalAlignment="Left" MinWidth="80" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionEndDate, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="interventionEndDate" HorizontalAlignment="Left" Width="80"
+                                 Text="{Binding Path=InterventionEndDate, Mode=TwoWay}" Margin="0,5"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Individuals Involved and Roles: " Margin="20,5,0,5"/>
-                        <TextBox x:Name="interventionInvolvement" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionPeopleInvolved, Mode=TwoWay}"
+                        <TextBlock Text="Individuals Involved and Roles: " Margin="57,5,0,5"/>
+                        <TextBox x:Name="interventionInvolvement" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=InterventionPeopleInvolved, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Description of Behavior/Need: " Margin="20,5,0,5"/>
-                        <TextBox x:Name="addressedIssue" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=AddressedIssue, Mode=TwoWay}"
+                        <TextBlock Text="Description of Behavior/Need: " Margin="62,5,0,5"/>
+                        <TextBox x:Name="addressedIssue" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=AddressedIssue, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Intervention Frequency and Times: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="frequencyAndTimes" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionFreqTime, Mode=TwoWay}"
+                        <TextBlock Text="Intervention Frequency and Times: " Margin="31,5,0,5"/>
+                        <TextBox x:Name="frequencyAndTimes" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=InterventionFreqTime, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Intervention Description: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="interventionDescription" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionDescription, Mode=TwoWay}"
+                        <TextBlock Text="Intervention Description: " Margin="100,5,0,5"/>
+                        <TextBox x:Name="interventionDescription" HorizontalAlignment="Left" Width="260" Height="40" 
+                    Text="{Binding Path=InterventionDescription, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Observed Results: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="observedResults" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=ObservedResults, Mode=TwoWay}"
+                        <TextBlock Text="Observed Results: " Margin="149,5,0,5"/>
+                        <TextBox x:Name="observedResults" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=ObservedResults, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Description and Date of Modifications: " Margin="5,5,0,5"/>
-                        <TextBox x:Name="intreventionModifications" HorizontalAlignment="Left" MinWidth="260" MinHeight="40" 
-                     VerticalAlignment="Top" Text="{Binding Path=InterventionModifications, Mode=TwoWay}"
+                        <TextBox x:Name="intreventionModifications" HorizontalAlignment="Left" Width="260" Height="40" 
+                     Text="{Binding Path=InterventionModifications, Mode=TwoWay}"
                      Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                     </StackPanel>
                 </StackPanel>
                 <!--************************************Progress Report*****************************-->
-                <StackPanel x:Name="ProgressReportForm" Orientation="Vertical" Visibility="Visible">
+                <StackPanel x:Name="ProgressReportForm" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Right" Text="Student Name: " Margin="5,5"/>
-                        <TextBox x:Name="studNameText_Progress" HorizontalAlignment="Left" MinWidth="120" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=StudentNameText, Mode=TwoWay}"
-                     Margin="0,5"/>
+                        <TextBox x:Name="studNameText_Progress" HorizontalAlignment="Left" Width="250" Height="25"
+                                VerticalAlignment="Top" Text="{Binding Path=StudentNameText, Mode=TwoWay}"  Margin="0,5"/>
 
                         <TextBlock HorizontalAlignment="Right" Text="Form Date: " Margin="30,5,0,5"/>
-                        <TextBox x:Name="dateCompletedText_Progress" HorizontalAlignment="Left" MinWidth="100" MaxHeight="20" 
-                     VerticalAlignment="Top" Text="{Binding Path=DateCompletedText, Mode=TwoWay}"
-                     Margin="0,5,0,20"/>
+                        <TextBox x:Name="dateCompletedText_Progress" HorizontalAlignment="Left" Width="100"
+                                 Text="{Binding Path=DateCompletedText, Mode=TwoWay}" Margin="0,5,0,20"/>
                     </StackPanel>
 
                     <CheckBox x:Name="sharedCheckBox" Margin="5,0,0,20" 
                         Content="Share With Parent" />
-                    
+
                     <TextBlock Text="Progress Report for Day: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="progressReportText" HorizontalAlignment="Left" MinWidth="300" MinHeight="60"
-                     VerticalAlignment="Top" Text="{Binding Path=ProgressReportText, Mode=TwoWay}"
-                     Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
+                    <TextBox x:Name="progressReportText" HorizontalAlignment="Left" Width="300" Height="60"
+                     Text="{Binding Path=ProgressReportText, Mode=TwoWay}"
+                     Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
-                    
-                    
                 </StackPanel>
                 <!--************************************Comments*****************************-->
                 <StackPanel Orientation="Vertical">
                     <TextBlock x:Name="commentsSection" 
                         Text="Comments/Additional Details: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="commentsSectionText" HorizontalAlignment="Left" MinWidth="300" MinHeight="60"
+                    <TextBox x:Name="commentsSectionText" HorizontalAlignment="Left" Width="300" Height="60"
                      VerticalAlignment="Top" Text="{Binding Path=CommentsSectionText, Mode=TwoWay}"
-                     Margin="0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
+                     Margin="5,0,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                      AcceptsReturn="True"/>
                 </StackPanel>
                 <!--************************************Buttons*****************************-->
-                <StackPanel Orientation="Horizontal">
+                <StackPanel x:Name="buttons" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="submitButton" Content="{Binding Path=SubmitButtonContent, Mode=TwoWay}" 
-                    Margin="50,30, 10, 30" MaxWidth="80" MinWidth="50" Click="submitButton_Click"/>
+                    Margin="50,30, 10, 30" Width="80" Click="submitButton_Click"/>
+
                     <Button x:Name="cancelButton" Content="Cancel" MinWidth="50" Margin="10,30,10,30" 
-                    MaxWidth="80" Click="cancelButton_Click"/>
+                    Width="80" Click="cancelButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

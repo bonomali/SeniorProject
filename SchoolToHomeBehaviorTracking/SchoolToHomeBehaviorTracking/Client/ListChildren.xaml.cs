@@ -8,16 +8,15 @@ using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows.Input;
 
-
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
-    /// Interaction logic for ListStudents.xaml
-    /// List of students for teacher accounts
+    /// Interaction logic for ListChildren.xaml
+    /// List of children for parent account
     /// </summary>
-    public partial class ListStudents : INotifyPropertyChanged
+    public partial class ListChildren : INotifyPropertyChanged
     {
-        private ObservableCollection<string> _studentNames;
+        private ObservableCollection<string> _childrenNames;
         private Delegate _delHandleClickMethod;
 
         static ChannelFactory<IWCFService> channelFactory = new
@@ -25,19 +24,19 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         static IWCFService proxy = channelFactory.CreateChannel();
 
-        public Delegate CallingDeleteStudentMethod
+        public Delegate CallingClickChildMethod
         {
             set { _delHandleClickMethod = value; }
         }
 
-        public ObservableCollection<string> StudentNames
+        public ObservableCollection<string> ChildrenNames
         {
-            get { return _studentNames; }
+            get { return _childrenNames; }
             set
             {
-                _studentNames = value;
+                _childrenNames = value;
                 OnPropertyChanged();
-             }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,10 +49,10 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void OnList_Changed(object sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged("StudentNames");
+            OnPropertyChanged("ChildrenNames");
         }
 
-        public ListStudents()
+        public ListChildren()
         {
             InitializeComponent();
             this.DataContext = this;
@@ -63,30 +62,25 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(studentList.SelectedItem != null)
-                _delHandleClickMethod.DynamicInvoke(studentList.SelectedItem.ToString());
+            if (childrenList.SelectedItem != null)
+                _delHandleClickMethod.DynamicInvoke(childrenList.SelectedItem.ToString());
         }
 
-        //get list of students from db and set list source
+        //get list of children from db and set list source
         public void RefreshList()
         {
-            studentList.ItemsSource = null;
+            childrenList.ItemsSource = null;
 
-            _studentNames = new ObservableCollection<string>();
+            _childrenNames = new ObservableCollection<string>();
 
-            List<string> list = proxy.ListStudents(Email.EmailAddress);
-            _studentNames.CollectionChanged += List_Changed;
+            List<string> list = proxy.ListChildren(Email.EmailAddress);
+            _childrenNames.CollectionChanged += List_Changed;
 
             foreach (var s in list)
             {
-                _studentNames.Add(s);
+                _childrenNames.Add(s);
             }
-            studentList.ItemsSource = _studentNames;
-        }
-
-        private void studentList_MouseEnter(object sender, MouseEventArgs e)
-        {
-
+            childrenList.ItemsSource = _childrenNames;
         }
     }
 }

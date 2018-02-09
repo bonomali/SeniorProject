@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
-        mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-        Height="550" Width="600">
-    
+        mc:Ignorable="d" FontSize="16" FontFamily="Lucida Sans Unicode"
+        Height="650" Width="725" Background="#afe1c8">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -28,67 +28,76 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" 
-                   Margin="0,0,10,10" FontSize="36" Text="Create Account/Add Student" />
+        <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="7">
+            <TextBlock  Margin="0,30,0,30" FontSize="42" Text="Create Account/Add Student"
+                    TextAlignment="Center" FontStyle="Italic"/>
 
-        <StackPanel Margin = "10" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="6">
-            <TextBlock Text = "Select Account Type:" Margin = "5" />
-            <RadioButton x:Name = "teacher" Margin = "5" Checked = "teacher_Checked" 
-                         GroupName="AccountType" Content = "Teacher Account" />
-            <StackPanel x:Name="teacherAccount" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Username: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
-                    <TextBox x:Name="tUserNameText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
+            <StackPanel Margin = "50,10">
+                <TextBlock Text = "Create Account - Select Account Type:" Margin = "5" FontSize="18"/>
+                <RadioButton x:Name = "teacher" Margin = "5" Checked = "teacher_Checked" 
+                         GroupName="AccountType" Content = "Teacher Account" Foreground="#47687c"/>
+                <StackPanel x:Name="teacherAccount" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Username: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
+                        <TextBox x:Name="tUserNameText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
                          VerticalAlignment="Bottom" MaxLength="20" Text="{Binding Path=tUserName, Mode=TwoWay }"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Access Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
-                    <TextBox x:Name="accessCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Access Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
+                        <TextBox x:Name="accessCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
                          VerticalAlignment="Bottom" TextChanged="accessCodeText_TextChanged"
                              Text="{ Binding Path=accessCode, Mode=TwoWay }"/>
+                    </StackPanel>
+                    <TextBlock x:Name="invalidAccessCodeText" Text="Invalid Access Code" Margin="145,0,0,0" Foreground="IndianRed" Visibility="Hidden"/>
                 </StackPanel>
-                <TextBlock x:Name="invalidAccessCodeText" Text="Invalid Access Code" Margin="5" Foreground="IndianRed" Visibility="Hidden"/>
-            </StackPanel>
-            <RadioButton x:Name = "parent" Margin = "5" Checked = "parent_Checked" 
-                         GroupName = "AccountType" Content = "Parent Account" />
-            <StackPanel x:Name="parentAccount" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Username: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
-                    <TextBox x:Name="pUserNameText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
+
+                <RadioButton x:Name = "parent" Margin = "5" Checked = "parent_Checked" 
+                         GroupName = "AccountType" Content = "Parent Account" Foreground="#47687c"/>
+                <StackPanel x:Name="parentAccount" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Username: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
+                        <TextBox x:Name="pUserNameText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
                          VerticalAlignment="Bottom" MaxLength="20" Text="{ Binding Path=pUserName, Mode=TwoWay }"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Access Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
+                        <TextBox x:Name="teacherCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
+                         VerticalAlignment="Bottom" TextChanged="teacherCodeText_TextChanged" Text="{ Binding Path=teacherCode, Mode=TwoWay }"
+                              ToolTipService.InitialShowDelay="500" ToolTipService.ShowDuration="5000" 
+                                ToolTipService.BetweenShowDelay="10000" ToolTip="One teacher code needed to create account. Additional children may be added after account creation"
+                             ToolTipService.HasDropShadow="True"/>
+                    </StackPanel>
+                    <TextBlock x:Name="invalidTeacherCodeText" Text="Invalid Teacher Code" Margin="145,0,0,0" Foreground="IndianRed" Visibility="Hidden"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Access Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
-                    <TextBox x:Name="teacherCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
-                         VerticalAlignment="Bottom" TextChanged="teacherCodeText_TextChanged" Text="{ Binding Path=teacherCode, Mode=TwoWay }"/>
-                </StackPanel>
-                <TextBlock x:Name="invalidTeacherCodeText" Text="Invalid Teacher Code" Margin="5" Foreground="IndianRed" Visibility="Hidden"/>
             </StackPanel>
-        </StackPanel>
 
-        <StackPanel Margin = "10" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="4">
-            <TextBlock Text = "Add Student To Parent Account:" Margin = "5" />
-            <RadioButton x:Name = "addStudent" Margin = "0,5,4.667,5" Checked = "addStudent_Checked" 
-                         GroupName="AccountType" Content = "Add Student" HorizontalAlignment="Left" Width="441" />
-            <StackPanel x:Name="addStud" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Teacher Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
-                    <TextBox x:Name="addTeacherCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
+            <StackPanel Margin="50,10">
+                <TextBlock Text = "Add Student To Existing Parent Account:" Margin = "5" FontSize="18"/>
+                <RadioButton x:Name = "addStudent" Margin = "0,5,4.667,5" Checked = "addStudent_Checked" 
+                         GroupName="AccountType" Content = "Add Student" Foreground="#47687c"
+                         HorizontalAlignment="Left" Width="441" />
+                <StackPanel x:Name="addStud" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Teacher Code: " TextAlignment="Right" Margin="5" Padding="5" Width="130"/>
+                        <TextBox x:Name="addTeacherCodeText" Margin="4.667,0,5.333,4.667" Width="250" Height="38" 
                          VerticalAlignment="Bottom" TextChanged="addTeacherCodeText_TextChanged"
-                             Text="{ Binding Path=teacherCode, Mode=TwoWay }"/>
+                             Text="{ Binding Path=teacherCode, Mode=TwoWay }"
+                              ToolTipService.InitialShowDelay="500" ToolTipService.ShowDuration="5000" 
+                                ToolTipService.BetweenShowDelay="10000" ToolTip="Enter teacher code to add additional child"
+                             ToolTipService.HasDropShadow="True"/>
+                    </StackPanel>
+                    <TextBlock x:Name="invalidAddTeacherCodeText" Text="Invalid/Duplicate Teacher Code" Margin="145,0,0,0" Foreground="IndianRed" Visibility="Hidden"/>
                 </StackPanel>
-                <TextBlock x:Name="invalidAddTeacherCodeText" Text="Invalid/Duplicate Teacher Code" Margin="5" Foreground="IndianRed" Visibility="Hidden"/>
             </StackPanel>
-        </StackPanel>
 
-        <StackPanel Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="5" 
-                    Orientation="Horizontal" Margin="0, 10">
-            <Button x:Name="submitButton"
+            <StackPanel Orientation="Horizontal" Margin="50, 10">
+                <Button x:Name="submitButton"
                 Width="150" Margin="10" Content="Submit" Click="sumbitButton_Click" />
-            <Button x:Name="cancelButton" 
+                <Button x:Name="cancelButton" 
                 Width="150" Margin="10" Content="Cancel" Click="cancelButton_Click" />
-            <Button x:Name="logoutButton" 
+                <Button x:Name="logoutButton" 
                 Width="150" Margin="10" Content="Logout" Click="logoutButton_Click" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

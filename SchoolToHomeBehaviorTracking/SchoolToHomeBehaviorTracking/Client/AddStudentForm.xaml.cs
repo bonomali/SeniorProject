@@ -1,19 +1,17 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Controls;
-using static System.Windows.Forms.Control;
 using System.Collections.Generic;
-using System.Windows.Media;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for AddStudentForm.xaml
+    /// Add a student to teacher account
     /// </summary>
     public partial class AddStudentForm : INotifyPropertyChanged
     {
@@ -27,23 +25,16 @@ namespace SchoolToHomeBehaviorTracking_Client
         private string _par2NameText;
         private string _par2PhoneText;
         private string _par2AddressText;
-        private Delegate _delRefreshListMethod;
+        private Delegate _delExitMethod;
 
-        public Delegate CallingRefreshListMethod
-        {
-            set { _delRefreshListMethod = value; }
-        }
+        static ChannelFactory<IWCFService> channelFactory = new
+              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
 
-        public AddStudentForm()
-        {
-            InitializeComponent();
-            this.DataContext = this;
-        }
+        static IWCFService proxy = channelFactory.CreateChannel();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public Delegate CallingExitMethod
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            set { _delExitMethod = value; }
         }
 
         public string StudFirstNameText
@@ -146,7 +137,17 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public IEnumerable<Control> Controls { get; private set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public AddStudentForm()
+        {
+            InitializeComponent();
+            this.DataContext = this;
+        }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -159,6 +160,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             else
             {
                 StudentData student = new StudentData();
+
                 student.FirstName = StudFirstNameText;
                 student.LastName = StudLastNameText;
                 student.BirthDate = StudBirthDate;
@@ -170,11 +172,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 student.Parent2Phone = Par2PhoneText;
                 student.Parent2Address = Par2AddressText;
 
-                ChannelFactory<IWCFService> channelFactory = new
-                ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-                IWCFService proxy = channelFactory.CreateChannel();
-
+                //add student, get teacher code for student
                 int code = proxy.AddStudent(Email.EmailAddress, student);
                 if (code != -1)
                 {
@@ -202,6 +200,11 @@ namespace SchoolToHomeBehaviorTracking_Client
             Par2NameText = null;
             Par2PhoneText = null;
             Par2AddressText = null;
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            _delExitMethod.DynamicInvoke();
         }
     }
 }

@@ -12,21 +12,31 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for ListForms.xaml
+    /// //List of student, teacher, and parent forms
     /// </summary>
     public partial class ListForms : INotifyPropertyChanged
     {
-        private Delegate _delHandleFormClickedMethod;
         private string _formType;
         private string _studentName;
         private string _formListHeader;
-
-        public Delegate CallingDeleteFormClickedMethod
-        {
-            set { _delHandleFormClickedMethod = value; }
-        }
+        private string BEHAVIOR_CATEGORY = "Behavior";
+        private string OTHER_CATEGORY = "Other";
+        private string ALL_CATEGORY = "All Forms";
 
         private ObservableCollection<string> _forms;
         private ObservableCollection<string> _otherForms;
+
+        private Delegate _delHandleFormClickedMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
+
+        public Delegate CallingFormClickedMethod
+        {
+            set { _delHandleFormClickedMethod = value; }
+        }
 
         public ObservableCollection<string> Forms
         {
@@ -101,15 +111,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             _forms = new ObservableCollection<string>();
             _otherForms = new ObservableCollection<string>();
 
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            string cat1 = "Behavior";
-            string cat2 = "Other";
-
-            List<string> list = proxy.GetTeacherForms(cat1);
+            List<string> list = proxy.GetTeacherForms(BEHAVIOR_CATEGORY);
             _forms.CollectionChanged += List_Changed;
 
             foreach (var f in list)
@@ -120,7 +122,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
             list.Clear();
 
-            list = proxy.GetTeacherForms(cat2);
+            list = proxy.GetTeacherForms(OTHER_CATEGORY);
             _otherForms.CollectionChanged += List_Changed;
 
             foreach (var f in list)
@@ -133,28 +135,6 @@ namespace SchoolToHomeBehaviorTracking_Client
             otherForms.Visibility = System.Windows.Visibility.Visible;
         }
 
-        //get list of parent forms from db and set list source
-        public void RefreshParentFormsList()
-        {
-            formList.ItemsSource = null;
-
-            _forms = new ObservableCollection<string>();
-
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            List<string> list = proxy.GetParentForms();
-            _forms.CollectionChanged += List_Changed;
-
-            foreach (var f in list)
-            {
-                _forms.Add(f);
-            }
-            formList.ItemsSource = _forms;
-        }
-
         //get list of forms for student from db and set list source
         public void RefreshStudentForms()
         {
@@ -164,20 +144,12 @@ namespace SchoolToHomeBehaviorTracking_Client
             _forms = new ObservableCollection<string>();
             _otherForms = new ObservableCollection<string>();
 
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            string cat1 = "Behavior";
-            string cat2 = "Other";
-
             if (_studentName != null)
             {
                 string fname = _studentName.Split(' ')[1];
                 string lname = _studentName.Split(',')[0];
 
-                List<string> list = proxy.GetStudentForms(fname, lname, cat1);
+                List<string> list = proxy.GetStudentForms(fname, lname, BEHAVIOR_CATEGORY);
                 _forms.CollectionChanged += List_Changed;
 
                 foreach (var f in list)
@@ -188,7 +160,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
                 list.Clear();
 
-                list = proxy.GetStudentForms(fname, lname, cat2);
+                list = proxy.GetStudentForms(fname, lname, OTHER_CATEGORY);
                 _otherForms.CollectionChanged += List_Changed;
 
                 foreach (var f in list)
@@ -197,12 +169,11 @@ namespace SchoolToHomeBehaviorTracking_Client
                 }
                 otherFormsList.ItemsSource = _otherForms;
             }
-
             behaviorForms.Visibility = System.Windows.Visibility.Visible;
             otherForms.Visibility = System.Windows.Visibility.Visible;
         }
 
-        //Get list of daily tracking forms
+        //Get list of daily behavior tracking forms
         public void RefreshStudentDailyForms()
         {
             formList.ItemsSource = null;
@@ -211,94 +182,105 @@ namespace SchoolToHomeBehaviorTracking_Client
             _forms = new ObservableCollection<string>();
             _otherForms = new ObservableCollection<string>();
 
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
+            formList.ItemsSource = _forms;
 
             if (_studentName != null)
             {
                 string fname = _studentName.Split(' ')[1];
                 string lname = _studentName.Split(',')[0];
-                string cat2 = "Other";
 
-                try
+                //get list of forms that need to be completed for the day (forms that haven't already
+                //been completed on that day)
+                List<string> list = proxy.GetStudentDailyForms(fname, lname);
+                _forms.CollectionChanged += List_Changed;
+
+                foreach (var f in list)
                 {
-                    List<string> list = proxy.GetStudentDailyForms(fname, lname);
-                    _forms.CollectionChanged += List_Changed;
-                    foreach (var f in list)
-                    {
-                        _forms.Add(f);
-                    }
-                    formList.ItemsSource = _forms;
-
-                    list.Clear();
-
-                    list = proxy.GetStudentForms(fname, lname, cat2);
-                    _otherForms.CollectionChanged += List_Changed;
-
-                    foreach (var f in list)
-                    {
-                        _otherForms.Add(f);
-                    }
-                    otherFormsList.ItemsSource = _otherForms;
+                    _forms.Add(f);
                 }
-                catch (Exception e)
+                formList.ItemsSource = _forms;
+
+                list.Clear();
+
+                list = proxy.GetStudentForms(fname, lname, OTHER_CATEGORY);
+                _otherForms.CollectionChanged += List_Changed;
+
+                foreach (var f in list)
                 {
-                    if (e.InnerException != null)
-                    {
-                        string err = e.InnerException.Message;
-                    }
+                    _otherForms.Add(f);
                 }
+                otherFormsList.ItemsSource = _otherForms;
             }
             behaviorForms.Visibility = System.Windows.Visibility.Visible;
             otherForms.Visibility = System.Windows.Visibility.Visible;
+            if (_forms.Count == 0)
+                noForms.Visibility = System.Windows.Visibility.Visible;
+            if (_otherForms.Count == 0)
+                noOtherForms.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        //Get list of all student forms (parent and teacher)
+        public void RefreshAllForms()
+        {
+            if (_studentName != null)
+            {
+                string fname = _studentName.Split(' ')[1];
+                string lname = _studentName.Split(',')[0];
+                formList.ItemsSource = null;
+
+                _forms = new ObservableCollection<string>();
+
+                //get list of all forms for student
+                List<string> list = proxy.GetStudentForms(fname, lname, ALL_CATEGORY);
+                _forms.CollectionChanged += List_Changed;
+
+                foreach (var f in list)
+                {
+                    _forms.Add(f);
+                }
+                formList.ItemsSource = _forms;
+                otherFormsList.ItemsSource = null;
+            }
+            behaviorForms.Visibility = System.Windows.Visibility.Visible;
+            otherForms.Visibility = System.Windows.Visibility.Collapsed;
+            noOtherForms.Visibility = System.Windows.Visibility.Collapsed;
+            if (_forms.Count == 0)
+                noForms.Visibility = System.Windows.Visibility.Visible;
         }
 
         //remove a tracking form for student
         public void RemoveForm()
         {
-            ChannelFactory<IWCFService> channelFactory = new
-           ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if (_studentName != null)
             {
                 string fname = _studentName.Split(' ')[1];
                 string lname = _studentName.Split(',')[0];
-                bool success = false;
 
                 if (formList.SelectedItem != null)
-                    success = proxy.RemoveForm(formList.SelectedItem.ToString(), fname, lname);
+                    proxy.RemoveForm(formList.SelectedItem.ToString(), fname, lname);
                 else if (otherFormsList.SelectedItem != null)
-                    success = proxy.RemoveForm(otherFormsList.SelectedItem.ToString(), fname, lname);
-
-                if (success)
-                {
-                    MessagePopUp mess = new MessagePopUp("Form deleted");
-                    mess.Show();
-                }
-                else
-                {
-                    MessagePopUp mess = new MessagePopUp("Error deleting form");
-                    mess.Show();
-                }
+                    proxy.RemoveForm(otherFormsList.SelectedItem.ToString(), fname, lname);
             }
         }
 
         private void formList_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            behaviorForms.Visibility = System.Windows.Visibility.Collapsed;
-            otherForms.Visibility = System.Windows.Visibility.Collapsed;
-            _delHandleFormClickedMethod.DynamicInvoke(formList.SelectedItem.ToString());
+            if (formList.SelectedItem != null)
+            {
+                behaviorForms.Visibility = System.Windows.Visibility.Collapsed;
+                otherForms.Visibility = System.Windows.Visibility.Collapsed;
+                _delHandleFormClickedMethod.DynamicInvoke(formList.SelectedItem.ToString());
+            }
         }
 
         private void otherFormsList_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            behaviorForms.Visibility = System.Windows.Visibility.Collapsed;
-            otherForms.Visibility = System.Windows.Visibility.Collapsed;
-            _delHandleFormClickedMethod.DynamicInvoke(otherFormsList.SelectedItem.ToString());
+            if (otherFormsList.SelectedItem != null)
+            {
+                behaviorForms.Visibility = System.Windows.Visibility.Collapsed;
+                otherForms.Visibility = System.Windows.Visibility.Collapsed;
+                _delHandleFormClickedMethod.DynamicInvoke(otherFormsList.SelectedItem.ToString());
+            }
         }
     }
 }

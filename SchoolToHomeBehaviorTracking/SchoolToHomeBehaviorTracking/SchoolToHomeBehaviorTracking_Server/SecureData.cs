@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SchoolToHomeBehaviorTracking_Server
 {
+    //class to encrypt and decrypt strings
     class SecureData
     {
         static readonly string PasswordHash = "0reg0nTech";

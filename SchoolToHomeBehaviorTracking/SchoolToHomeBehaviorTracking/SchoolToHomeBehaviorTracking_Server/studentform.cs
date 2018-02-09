@@ -23,5 +23,6 @@ namespace SchoolToHomeBehaviorTracking_Server
         public bool Shared { get; set; }
         public string FormData { get; set; }
         public string Description { get; set; }
+        public Nullable<int> BehaviorRating { get; set; }
     }
 }

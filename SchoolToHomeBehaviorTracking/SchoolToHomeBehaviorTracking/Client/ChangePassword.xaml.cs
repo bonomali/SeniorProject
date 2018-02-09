@@ -9,25 +9,20 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for ChangePassword.xaml
+    /// Change user's password
     /// </summary>
     public partial class ChangePassword : INotifyPropertyChanged
     {
-        private string _returnPage;
         private Delegate _delCloseMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+         ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public void CallingCloseMethod(Delegate del)
         {
             _delCloseMethod = del;
-        }
-
-        public string ReturnPage
-        {
-            get { return _returnPage; }
-            set
-            {
-                _returnPage = value;
-                OnPropertyChanged();
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -44,24 +39,19 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void newPasswordText_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            invalidPasswordText.Visibility = System.Windows.Visibility.Hidden;
-            unmatchedPasswordText.Visibility = System.Windows.Visibility.Hidden;
+            invalidPasswordText.Visibility = System.Windows.Visibility.Collapsed;
+            unmatchedPasswordText.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void reenterPasswordText_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            invalidPasswordText.Visibility = System.Windows.Visibility.Hidden;
-            unmatchedPasswordText.Visibility = System.Windows.Visibility.Hidden;
+            invalidPasswordText.Visibility = System.Windows.Visibility.Collapsed;
+            unmatchedPasswordText.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
             bool passwordValid = false;
-
-            ChannelFactory<IWCFService> channelFactory = new
-                  ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
 
             //validate new password meets requirements or display error message
             if (!proxy.ValidatePassword(newPasswordText.Password.ToString()))
@@ -91,23 +81,13 @@ namespace SchoolToHomeBehaviorTracking_Client
             if (passwordValid == true)
             {
                 proxy.UpdatePassword(Email.EmailAddress, newPasswordText.Password.ToString());
-                if (_returnPage == "Exit")
-                    _delCloseMethod.DynamicInvoke();
-                else
-                {
-                    _delCloseMethod.DynamicInvoke();
-                }
+                _delCloseMethod.DynamicInvoke();
             }
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_returnPage == "Exit")
-                _delCloseMethod.DynamicInvoke();
-            else
-            {
-                _delCloseMethod.DynamicInvoke();
-            }
+            _delCloseMethod.DynamicInvoke();
         }
     }
 }

@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -61,6 +69,18 @@
     <Compile Include="AddStudentForm.xaml.cs">
       <DependentUpon>AddStudentForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DisplayParentForm.xaml.cs">
+      <DependentUpon>DisplayParentForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DisplayTeacherForm.xaml.cs">
+      <DependentUpon>DisplayTeacherForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListChildren.xaml.cs">
+      <DependentUpon>ListChildren.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListParentForms.xaml.cs">
+      <DependentUpon>ListParentForms.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MessagePopUp.xaml.cs">
       <DependentUpon>MessagePopUp.xaml</DependentUpon>
     </Compile>
@@ -83,6 +103,12 @@
       <DependentUpon>EditStudentForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Email.cs" />
+    <Compile Include="MuliColumnFormsList.xaml.cs">
+      <DependentUpon>MuliColumnFormsList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ParentForms.xaml.cs">
+      <DependentUpon>ParentForms.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TeacherForms.xaml.cs">
       <DependentUpon>TeacherForms.xaml</DependentUpon>
     </Compile>
@@ -116,6 +142,22 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DisplayParentForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DisplayTeacherForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListChildren.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListParentForms.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MessagePopUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -141,6 +183,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditStudentForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MuliColumnFormsList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ParentForms.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -217,6 +267,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

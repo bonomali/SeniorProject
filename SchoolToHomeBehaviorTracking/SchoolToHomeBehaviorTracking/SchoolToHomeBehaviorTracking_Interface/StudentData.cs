@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SchoolToHomeBehaviorTracking_Interface
+﻿namespace SchoolToHomeBehaviorTracking_Interface
 {
     public class StudentData
     {

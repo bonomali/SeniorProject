@@ -5,16 +5,73 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-        Title="User DashBoard" Height="650" Width="725">
+        mc:Ignorable="d" FontSize="16" FontFamily="Lucida Sans Unicode"
+        Title="User DashBoard" Height="650" Width="725"
+        SizeChanged="Window_SizeChanged">
 
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#f7f7f7"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#3a6d9c"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#f7f7f7" />
+            <Setter Property="Foreground" Value="#123454"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#00699b" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9dd4c5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#47687c"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <Style TargetType="Menu">
+            <Setter Property="Foreground" Value="#123454"/>
+            <Setter Property="Background" Value="#afe1c8"/>
+        </Style>
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="#e1dede"/>
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="MaxWidth" Value="300" />
+            <Style.Resources>
+                <Style TargetType="ContentPresenter">
+                    <Style.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+    </Window.Resources>
 
-    <TabControl x:Name="tabControl" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="6" SelectionChanged="TabControl_SelectionChanged" >
-        <TabItem x:Name="createAccount" Header="Create Account" Visibility="Collapsed" >
-            <local:Accounts x:Name="createAccountUC"></local:Accounts>
-        </TabItem>
-        <TabItem x:Name="adminTab" Header="Admin" Visibility="Collapsed"></TabItem>
-        <TabItem x:Name="teacherTab" Header="Teacher" Visibility="Collapsed"></TabItem>
-        <TabItem x:Name="parentTab" Header="Parent" Visibility="Collapsed"></TabItem>
-    </TabControl>
+    <ScrollViewer x:Name="MyScrollViewer" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10">
+        <StackPanel>
+            <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" >
+                <TabItem x:Name="createAccount" Header="Create Account" Visibility="Collapsed" >
+                    <local:Accounts x:Name="createAccountUC"></local:Accounts>
+                </TabItem>
+                <TabItem x:Name="adminTab" Header="Admin" Visibility="Collapsed"></TabItem>
+                <TabItem x:Name="teacherTab" Header="Teacher" Visibility="Collapsed"></TabItem>
+                <TabItem x:Name="parentTab" Header="Parent" Visibility="Collapsed"></TabItem>
+            </TabControl>
+        </StackPanel>
+    </ScrollViewer>
 </Window>

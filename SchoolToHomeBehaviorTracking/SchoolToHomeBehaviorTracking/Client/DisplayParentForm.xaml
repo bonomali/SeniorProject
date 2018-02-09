@@ -1,0 +1,150 @@
+﻿<UserControl x:Class="SchoolToHomeBehaviorTracking_Client.DisplayParentForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
+             mc:Ignorable="d" FontSize="14" FontFamily="Lucida Sans Unicode"
+             d:DesignHeight="550" d:DesignWidth="700" Background="#afe1c8" Foreground="Black">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="noParentSubmittedForm" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="8" Grid.RowSpan="2" 
+                   Text="No Parent Submitted Form" FontSize="18" Margin="10,0" Foreground="Black" Visibility="Collapsed"/>
+
+        <ScrollViewer x:Name="form" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="600" MaxHeight="400" Margin="0,14,0,-14">
+            <StackPanel Orientation="Vertical" Margin="10,0">
+                <StackPanel Margin="5,5,100,5">
+                    <TextBlock Text="{Binding Path=FormName, Mode=TwoWay}" FontSize="24"/>
+                </StackPanel>
+
+                <!--************************************Child Info*****************************-->
+                <StackPanel x:Name="StudentInfo">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="childName" HorizontalAlignment="Right"
+                            Text="Child Name: " Margin="20,5"/>
+                        <TextBlock x:Name="childNameText" HorizontalAlignment="Left"
+                        Text="{Binding Path=ChildNameText, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock x:Name="completedByName" HorizontalAlignment="Right"
+                Text="Completed By: " Margin="5,5"/>
+                        <TextBlock x:Name="completedByNameText" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=CompletedByNameText, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="dateCompleted" HorizontalAlignment="Right"
+                        Text="Form Date: " Margin="30,5,0,5"/>
+                        <TextBlock x:Name="dateCompletedText" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=DateCompletedText, Mode=TwoWay}" Margin="0,5,0,30"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!--************************************Behavior Scale*****************************-->
+                <StackPanel x:Name="BehaviorScale" IsEnabled="False">
+                    <TextBlock Text="Overall Home Behavior Ranking" FontSize="14"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name = "behaviorScale1" Margin = "10,5" GroupName="BehaviorScale" Content = "1"/>
+                        <RadioButton x:Name = "behaviorScale2" Margin = "10,5" GroupName="BehaviorScale" Content = "2"/>
+                        <RadioButton x:Name = "behaviorScale3" Margin = "10,5" GroupName="BehaviorScale" Content = "3"/>
+                        <RadioButton x:Name = "behaviorScale4" Margin = "10,5" GroupName="BehaviorScale" Content = "4"/>
+                        <RadioButton x:Name = "behaviorScale5" Margin = "10,5" GroupName="BehaviorScale" Content = "5"/>
+                        <RadioButton x:Name = "behaviorScale6" Margin = "10,5" GroupName="BehaviorScale" Content = "6"/>
+                        <RadioButton x:Name = "behaviorScale7" Margin = "10,5" GroupName="BehaviorScale" Content = "7"/>
+                        <RadioButton x:Name = "behaviorScale8" Margin = "10,5" GroupName="BehaviorScale" Content = "8"/>
+                        <RadioButton x:Name = "behaviorScale9" Margin = "10,5" GroupName="BehaviorScale" Content = "9"/>
+                        <RadioButton x:Name = "behaviorScale10" Margin = "10,5" GroupName="BehaviorScale" Content = "10"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!--************************************Home Info*****************************-->
+                <StackPanel Visibility="Visible">
+                    <StackPanel  Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Right" Text="Wake Time: " Margin="5,5"/>
+                        <TextBlock x:Name="wakeTime" HorizontalAlignment="Left" 
+                      Margin="0,5" Text="{Binding Path=WakeTime, Mode=TwoWay}" />
+
+                        <TextBlock HorizontalAlignment="Right" Text="Fell Asleep Time: " Margin="30,5,0,5"/>
+                        <TextBlock x:Name="asleepTime" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=AsleepTime, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Breakfast: " Margin="17,5,0,5"/>
+                        <TextBlock x:Name="breakfast" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=Breakfast, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Lunch: " Margin="40,5,0,5"/>
+                        <TextBlock x:Name="lunch" HorizontalAlignment="Left"
+                                   Text="{Binding Path=Lunch, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Dinner: " Margin="35,5,0,5"/>
+                        <TextBlock x:Name="dinner" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=Dinner, Mode=TwoWay}" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Snacks: " Margin="35,5,0,5"/>
+                        <TextBlock x:Name="snacks" HorizontalAlignment="Left"
+                     Text="{Binding Path=Snacks, Mode=TwoWay}" Margin="0,5" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Describe Child's Mood/Behavior: " Margin="43,5,0,5"/>
+                        <TextBlock x:Name="mood" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=Mood, Mode=TwoWay}"
+                     Margin="0,5" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Describe Any Consequences Recieved: " Margin="5,5,0,5"/>
+                        <TextBlock x:Name="consequences" HorizontalAlignment="Left" 
+                                   Text="{Binding Path=Consequences, Mode=TwoWay}" Margin="0,5" />
+                    </StackPanel>
+                </StackPanel>
+
+                <CheckBox x:Name="sharedCheckBox" Margin="5,0,0,20" IsEnabled="False"
+                        Content="Share With Teacher" />
+
+                <!--************************************Comments*****************************-->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="commentsSection" 
+                        Text="Comments/Additional Details: " Margin="5,5,0,5"/>
+                    <TextBlock x:Name="commentsSectionText" HorizontalAlignment="Left" MinWidth="300" MinHeight="60"
+                     VerticalAlignment="Top" Text="{Binding Path=CommentSectionText, Mode=TwoWay}"
+                     Margin="5" />
+                </StackPanel>
+                <Button x:Name="backButton" Content="Back" Margin="5,30,5,5" Click="backButton_Click" Width="80"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
+

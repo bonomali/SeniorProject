@@ -1,57 +1,49 @@
 ﻿using SchoolToHomeBehaviorTracking_Interface;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Dash.xaml
+    /// Parent dashboard containing tabs for user account dashboards
     /// </summary>
     public partial class Dash : Window
     {
         delegate void DelCreateUserControlMethod();
         delegate void DelLogoutUserControlMethod();
         delegate void DelHideCreateControlMethod();
+        delegate void DelReloadAccountsControlMethod();
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public Dash()
         {
             InitializeComponent();
+            this.WindowState = WindowState.Maximized;
             ShowTabs();
         }
 
         //determine which tabs to show
         public void ShowTabs()
         {
-            DelCreateUserControlMethod delUserCreateControl = new DelCreateUserControlMethod(CreateAccount);
-            DelLogoutUserControlMethod delUserLogoutControl = new DelLogoutUserControlMethod(Logout);
-            DelHideCreateControlMethod delUserHideCreateControl = new DelHideCreateControlMethod(ShowTabs);
             bool parentAccounts = false;
             bool adminAccounts = false;
             bool teacherAccounts = false;
 
+            DelCreateUserControlMethod delUserCreateControl = new DelCreateUserControlMethod(CreateAccount);
+            DelLogoutUserControlMethod delUserLogoutControl = new DelLogoutUserControlMethod(Logout);
+            DelHideCreateControlMethod delUserHideCreateControl = new DelHideCreateControlMethod(ShowTabs);
+            DelReloadAccountsControlMethod delUserReloadAccountsControl = new DelReloadAccountsControlMethod(ReloadAccounts);
             createAccountUC.HideCreateAccountMethod = delUserHideCreateControl;
             createAccountUC.LogoutMethod = delUserLogoutControl;
 
             createAccount.Visibility = System.Windows.Visibility.Collapsed;
-
-            ChannelFactory<IWCFService> channelFactory = new
-               ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
 
             //initialize correct tabs for user accounts
             if (proxy.ExistingParentAccount(Email.EmailAddress))
@@ -68,6 +60,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 TeacherDash tDash = new TeacherDash();
                 tDash.CallingCreateMethod = delUserCreateControl;
                 tDash.CallingLogoutMethod = delUserLogoutControl;
+                tDash.CallingReloadTabsMethod = delUserReloadAccountsControl;
                 this.teacherTab.Content = tDash;
                 this.teacherTab.Visibility = System.Windows.Visibility.Visible;
                 teacherAccounts = true;
@@ -77,6 +70,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 AdminDash aDash = new AdminDash();
                 aDash.CallingCreateMethod = delUserCreateControl;
                 aDash.CallingLogoutMethod = delUserLogoutControl;
+                aDash.CallingReloadTabsMethod = delUserReloadAccountsControl;
                 this.adminTab.Content = aDash;
                 this.adminTab.Visibility = System.Windows.Visibility.Visible;
                 adminAccounts = true;
@@ -120,11 +114,6 @@ namespace SchoolToHomeBehaviorTracking_Client
         //return true if existing account, false if no parent account
         public bool ExistingParentAccount()
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if (proxy.ExistingParentAccount(Email.EmailAddress))
                 return true;
             return false;
@@ -134,11 +123,6 @@ namespace SchoolToHomeBehaviorTracking_Client
         //return true if existing account, false if no teacher account
         public bool ExistingTeacherAccount()
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if (proxy.ExistingTeacherAccount(Email.EmailAddress))
                 return true;
             return false;
@@ -157,11 +141,6 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if (adminTab.IsSelected)
             {
                 TabFocus.Focus = "admin";
@@ -176,6 +155,41 @@ namespace SchoolToHomeBehaviorTracking_Client
             {
                 TabFocus.Focus = "parent";
                 proxy.UpdateParentLastAccess(Email.EmailAddress);
+            }
+            tabControl.Background = Brushes.LightGray;
+        }
+
+        private void ReloadAccounts()
+        {
+            //show correct tabs for user accounts
+            if (proxy.ExistingParentAccount(Email.EmailAddress))
+                this.parentTab.Visibility = System.Windows.Visibility.Visible;
+            else
+                this.parentTab.Visibility = System.Windows.Visibility.Collapsed;
+
+            if (proxy.ExistingTeacherAccount(Email.EmailAddress))
+                this.teacherTab.Visibility = System.Windows.Visibility.Visible;
+            else
+                this.teacherTab.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= 925)
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
+            if (e.NewSize.Height < 850)
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             }
         }
     }

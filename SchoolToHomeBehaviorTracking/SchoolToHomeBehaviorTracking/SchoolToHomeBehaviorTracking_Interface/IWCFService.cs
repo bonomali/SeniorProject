@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
-using System.Text;
 
 namespace SchoolToHomeBehaviorTracking_Interface
 {
@@ -99,18 +95,23 @@ namespace SchoolToHomeBehaviorTracking_Interface
         [OperationContract]
         StudentData GetStudent(string fname, string lname);
 
+        //return teacher's username
         [OperationContract]
         string GetTeacherUserName(string email);
 
+        //return parent's username
         [OperationContract]
         string GetParentUserName(string email);
 
+        //return admin user's last access date
         [OperationContract]
         string GetAdminAccessDate(string email);
 
+        //return teacher user's last access date
         [OperationContract]
         string GetTeacherAccessDate(string email);
 
+        //return parent user's last access date
         [OperationContract]
         string GetParentAccessDate(string email);
 
@@ -138,7 +139,7 @@ namespace SchoolToHomeBehaviorTracking_Interface
         bool RemoveTeacher(string fname, string lname);
 
         //Update user's email
-        //retur true on success, false on failure
+        //return true on success, false on failure
         [OperationContract]
         bool UpdateEmail(string oldEmail, string newEmail);
 
@@ -153,12 +154,12 @@ namespace SchoolToHomeBehaviorTracking_Interface
         int AddStudent(string email, StudentData stud);
 
         //Update teacher username
-        //retur true on success, false on failure
+        //return true on success, false on failure
         [OperationContract]
         bool UpdateTeacherUserName(string email, string newUserName);
 
         //Update teacher username
-        //retur true on success, false on failure
+        //return true on success, false on failure
         [OperationContract]
         bool UpdateParentUserName(string email, string newUserName);
 
@@ -168,6 +169,7 @@ namespace SchoolToHomeBehaviorTracking_Interface
         bool DeleteStudent(string email, string fname, string lname);
 
         //Update student
+        //Also deletes parent account if parent has no other students
         //Return true on success, false on failure
         [OperationContract]
         bool UpdateStudent(string email, string fname, string lname, StudentData stud);
@@ -176,11 +178,12 @@ namespace SchoolToHomeBehaviorTracking_Interface
         [OperationContract]
         List<string> GetTeacherForms(string category);
 
-        //get list of parent use form names
+        //get list of child daily home tracking forms
         [OperationContract]
-        List<string> GetParentForms();
+        List<string> GetChildDailyForms(string fname, string lname);
 
         //add a form to a student
+        //return true on success, false on failure
         [OperationContract]
         bool AddFormToStudent(string form, string description, string fname, string lname);
 
@@ -189,10 +192,12 @@ namespace SchoolToHomeBehaviorTracking_Interface
         List<string> GetStudentForms(string fname, string lname, string category);
 
         //remove a tracking form for student
+        //return true on success, false on failure
         [OperationContract]
         bool RemoveForm(string form, string fname, string lname);
 
         //save student tracking form
+        //return true on success, false on failure
         [OperationContract]
         bool SaveStudentForm(StudentFormData form);
 
@@ -203,5 +208,31 @@ namespace SchoolToHomeBehaviorTracking_Interface
         //get form description for student form
         [OperationContract]
         string GetStudentFormDescription(string fname, string lname, string formName);
+
+        //return a list of children for parent
+        //return list of children
+        [OperationContract]
+        List<string> ListChildren(string email);
+
+        //return a completed for for student
+        //returns form completed that day or null if no form exists
+        [OperationContract]
+        StudentFormData GetDailyForm(string formName, string fname, string lname);
+
+        //Get list of forms by type for a student for teacher viewing
+        [OperationContract]
+        List<StudentFormData> GetStudentFormsListByType(string form, string fname, string lname);
+
+        //Get list of forms by type for a child for parent viewing
+        [OperationContract]
+        List<StudentFormData> GetChildFormsListByType(string form, string fname, string lname);
+
+        //Get form by id for teacher viewing
+        [OperationContract]
+        StudentFormData GetTeacherViewableFormByID(string formID);
+
+        //Get form by id for parent viewing
+        [OperationContract]
+        StudentFormData GetParentViewableFormByID(string formID);
     }
 }

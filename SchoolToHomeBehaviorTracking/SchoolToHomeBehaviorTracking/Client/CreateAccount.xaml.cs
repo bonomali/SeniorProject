@@ -8,12 +8,19 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for CreateAccount.xaml
+    /// Create a user account
     /// </summary>
     public partial class CreateAccount : UserControl
     {
         private string _email;
+
         private Delegate _delCloseMethod;
         private Delegate _delLoginMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public void CallingCloseMethod(Delegate del)
         {
@@ -47,16 +54,9 @@ namespace SchoolToHomeBehaviorTracking_Client
             bool emailValid = false;
             bool passwordValid = false;
 
-            ChannelFactory<IWCFService> channelFactory = new
-                  ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             //validate email or display error message
             if (!proxy.ValidateEmail(_email))
             {
-                newPasswordText.Clear();
-                reenterPasswordText.Clear();
                 invalidEmailText.Visibility = System.Windows.Visibility.Visible;
                 emailValid = false;
             }
@@ -66,8 +66,7 @@ namespace SchoolToHomeBehaviorTracking_Client
             //validate password meets requirements or display error message
             if (!proxy.ValidatePassword(newPasswordText.Password.ToString()))
             {
-                newPasswordText.Clear();
-                reenterPasswordText.Clear();
+                ClearPasswordFields();
                 invalidPasswordText.Visibility = System.Windows.Visibility.Visible;
                 passwordValid = false;
             }
@@ -78,8 +77,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 
                 if (!proxy.ValidateMatchingPasswords(newPasswordText.Password.ToString(), reenterPasswordText.Password.ToString()))
                 {
-                    newPasswordText.Clear();
-                    reenterPasswordText.Clear();
+                    ClearPasswordFields();
                     unmatchingPasswordText.Visibility = System.Windows.Visibility.Visible;
                     passwordValid = false;
                 }
@@ -92,15 +90,14 @@ namespace SchoolToHomeBehaviorTracking_Client
             {
                 if (proxy.CreateUser(_email, newPasswordText.Password.ToString()))
                 {
-                    Email.EmailAddress = _email;
+                    Email.EmailAddress = _email; //set static email
                     Dash dashPage = new Dash();
                     dashPage.Show();
                     _delCloseMethod.DynamicInvoke();
                 }
                 else
                 {
-                    newPasswordText.Clear();
-                    reenterPasswordText.Clear();
+                    ClearPasswordFields();
                     duplicateEmailText.Visibility = System.Windows.Visibility.Visible;
                 }
             }            
@@ -114,20 +111,26 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void newEmailText_TextChanged(object sender, TextChangedEventArgs e)
         {
-            invalidEmailText.Visibility = System.Windows.Visibility.Hidden;
-            duplicateEmailText.Visibility = System.Windows.Visibility.Hidden;
+            invalidEmailText.Visibility = System.Windows.Visibility.Collapsed;
+            duplicateEmailText.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void reenterPasswordText_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            invalidPasswordText.Visibility = System.Windows.Visibility.Hidden;
-            unmatchingPasswordText.Visibility = System.Windows.Visibility.Hidden;
+            invalidPasswordText.Visibility = System.Windows.Visibility.Collapsed;
+            unmatchingPasswordText.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void newPasswordText_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            invalidPasswordText.Visibility = System.Windows.Visibility.Hidden;
-            unmatchingPasswordText.Visibility = System.Windows.Visibility.Hidden;
+            invalidPasswordText.Visibility = System.Windows.Visibility.Collapsed;
+            unmatchingPasswordText.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void ClearPasswordFields()
+        {
+            newPasswordText.Clear();
+            reenterPasswordText.Clear();
         }
     }
 }

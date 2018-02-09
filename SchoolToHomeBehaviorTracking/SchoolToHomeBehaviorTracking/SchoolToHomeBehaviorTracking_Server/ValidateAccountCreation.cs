@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace SchoolToHomeBehaviorTracking_Server
 {
+    //validate email and password meets requirements
     public class ValidateAccountCreation
     {
         bool _invalid = false;

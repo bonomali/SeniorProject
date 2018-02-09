@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
-using System.Threading;
-using System.ComponentModel;
-using System.Windows;
 
 namespace SchoolToHomeBehaviorTracking_Server
 {
+    //class to send emails
     public class SendEmail
     { 
-        //send email
         public bool Send(string email, string accessCode)
         {
             try

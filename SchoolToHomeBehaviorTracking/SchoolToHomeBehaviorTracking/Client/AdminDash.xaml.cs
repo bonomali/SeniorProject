@@ -9,20 +9,50 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for AdminDash.xaml
+    /// Handle menu options for administrator dashbboard 
     /// </summary>
     public partial class AdminDash : INotifyPropertyChanged
     {
-        private System.Delegate _delCreateMethod;
-        private System.Delegate _delLogoutMethod;
         private string _lastAccess;
-        private string _firstNameText;
-        private string _lastNameText;
+        private string _textBox1Text;
+        private string _textBox2Text;
         private string _submitButtonContent;
         private string _menuHeader;
-        private string _accessCode;
+        private string confirmMessage;
         private string _text1Text;
         private string _text2Text;
         private string _errorMsg;
+
+        private static string ADDTEACHER = "Add";
+        private static string REMOVETEACHER = "Remove";
+        private static string LOOKUPTEACHER = "Search";
+        private static string UPDATEEMAIL = "Update";
+        
+        private System.Delegate _delCreateMethod;
+        private System.Delegate _delLogoutMethod;
+        private System.Delegate _delReloadTabsMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+          ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
+
+        //create new user account
+        public Delegate CallingCreateMethod
+        {
+            set { _delCreateMethod = value; }
+        }
+
+        public Delegate CallingLogoutMethod
+        {
+            set { _delLogoutMethod = value; }
+        }
+
+        public Delegate CallingReloadTabsMethod
+        {
+            set { _delReloadTabsMethod = value; }
+        }
+
         public string LastAccess
         {
             get { return _lastAccess; }
@@ -33,22 +63,22 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public string FirstNameText
+        public string TextBox1Text
         {
-            get { return _firstNameText; }
+            get { return _textBox1Text; }
             set
             {
-                _firstNameText = value;
+                _textBox1Text = value;
                 OnPropertyChanged();
             }
         }
 
-        public string LastNameText
+        public string TextBox2Text
         {
-            get { return _lastNameText; }
+            get { return _textBox2Text; }
             set
             {
-                _lastNameText = value;
+                _textBox2Text = value;
                 OnPropertyChanged();
             }
         }
@@ -73,11 +103,11 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public string AccessCode
+        public string ConfirmMessage
         {
-            get { return _accessCode; }
+            get { return confirmMessage; }
             set {
-                    _accessCode = value;
+                    confirmMessage = value;
                     OnPropertyChanged();
                 }
         }
@@ -112,16 +142,6 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public Delegate CallingCreateMethod
-        {
-            set { _delCreateMethod = value; }
-        }
-
-        public Delegate CallingLogoutMethod
-        {
-            set { _delLogoutMethod = value; }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -133,17 +153,9 @@ namespace SchoolToHomeBehaviorTracking_Client
             InitializeComponent();
             this.DataContext = this;
 
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            if (proxy.ExistingParentAccount(Email.EmailAddress) && proxy.ExistingTeacherAccount(Email.EmailAddress))
-                a_newAccountButton.Visibility = System.Windows.Visibility.Hidden;
-
             LastAccess = "Last Login: " + proxy.GetAdminAccessDate(Email.EmailAddress);
-            MenuHeader = "Add Teacher";
-            SubmitButtonContent = "Add";
+            MenuHeader = "Add A Teacher";
+            SubmitButtonContent = ADDTEACHER;
             Text1Text = "First Name: ";
             Text2Text = "Last Name: ";
             ErrorMsg = "Invalid/Duplicate Name";
@@ -163,8 +175,8 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             ClearMessages();
             ClearTextBoxes();
-            SubmitButtonContent = "Add";
-            MenuHeader = "Add Teacher";
+            SubmitButtonContent = ADDTEACHER;
+            MenuHeader = "Add A Teacher";
             Text1Text = "First Name: ";
             Text2Text = "Last Name: ";
             ErrorMsg = "Invalid/Duplicate Name";
@@ -174,58 +186,55 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             ClearMessages();
             ClearTextBoxes();
-            SubmitButtonContent = "Remove";
-            MenuHeader = "Remove Teacher";
+            SubmitButtonContent = REMOVETEACHER;
+            MenuHeader = "Remove A Teacher";
             Text1Text = "First Name: ";
             Text2Text = "Last Name: ";
-            ErrorMsg = "Teacher doesn't exists";
+            ErrorMsg = "Teacher doesn't exist";
         }
 
         private void lookup_Click(object sender, RoutedEventArgs e)
         {
             ClearMessages();
             ClearTextBoxes();
-            SubmitButtonContent = "Search";
-            MenuHeader = "Code Lookup";
+            SubmitButtonContent = LOOKUPTEACHER;
+            MenuHeader = "Teacher Access Code Lookup";
             Text1Text = "First Name: ";
             Text2Text = "Last Name: ";
-            ErrorMsg = "Teacher doesn't exists";
+            ErrorMsg = "Teacher doesn't exist";
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             ClearMessages();
 
-            if (SubmitButtonContent == "Add")
+            if (SubmitButtonContent == ADDTEACHER)
             {
-                int code = proxy.AddTeacher(FirstNameText, LastNameText);
+                //add teacher, get access code for teacher
+                int code = proxy.AddTeacher(TextBox1Text, TextBox2Text);
                 if (code != -1)
                 {
-                    accessCode.Visibility = System.Windows.Visibility.Visible;
-                    AccessCode = "Access Code: " + code.ToString();
+                    confirmMsg.Visibility = System.Windows.Visibility.Visible;
+                    ConfirmMessage = "Access Code: " + code.ToString();
                 }
                 else
                     invalidEntryMsg.Visibility = System.Windows.Visibility.Visible;
             }
-            else if (SubmitButtonContent == "Remove")
+            else if (SubmitButtonContent == REMOVETEACHER)
             {
-                DeleteTeacherVerify verify = new DeleteTeacherVerify(this, FirstNameText + " " + LastNameText);
+                DeleteTeacherVerify verify = new DeleteTeacherVerify(this, TextBox1Text + " " + TextBox2Text);
                 verify.Show();
             }
-            else if(Text1Text == "New Email: ")
+            else if(SubmitButtonContent == UPDATEEMAIL)
             {
-                if (FirstNameText == LastNameText)
+                //check that emails match
+                if (TextBox1Text == TextBox2Text)
                 {
-                    if (proxy.ValidateEmail(FirstNameText))
+                    if (proxy.ValidateEmail(TextBox1Text))
                     {
-                        if (proxy.UpdateEmail(Email.EmailAddress, FirstNameText))
+                        if (proxy.UpdateEmail(Email.EmailAddress, TextBox1Text))
                         {
-                            Email.EmailAddress = FirstNameText; //update static email value
+                            Email.EmailAddress = TextBox1Text; //update static email value
                             validUpdateInfo.Visibility = System.Windows.Visibility.Visible;
                             ClearTextBoxes();
                         }
@@ -238,18 +247,18 @@ namespace SchoolToHomeBehaviorTracking_Client
                 else
                     invalidEntryMsg.Visibility = System.Windows.Visibility.Visible;
             }
-            else if(SubmitButtonContent == "Search")
+            else if(SubmitButtonContent == LOOKUPTEACHER)
             {
-                int code = proxy.AccessCodeLookup(FirstNameText + " " + LastNameText);
+                //get access code of with teacher with matching first and last name
+                int code = proxy.AccessCodeLookup(TextBox1Text + " " + TextBox2Text);
 
                 if (code != -1)
                 {
-                    accessCode.Visibility = System.Windows.Visibility.Visible;
-                    AccessCode = "Access Code: " + code.ToString();
+                    confirmMsg.Visibility = System.Windows.Visibility.Visible;
+                    ConfirmMessage = "Access Code: " + code.ToString();
                 }
                 else
                     invalidEntryMsg.Visibility = System.Windows.Visibility.Visible;
-                    
             }
         }
 
@@ -257,10 +266,10 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             ClearMessages();
             ClearTextBoxes();
-            Text1Text = "New Email: ";
+            Text1Text = "     New Email: ";
             Text2Text = "Reenter Email: ";
-            SubmitButtonContent = "Update";
-            MenuHeader = "Update Email";
+            SubmitButtonContent = UPDATEEMAIL;
+            MenuHeader = "Update Account Email";
             ErrorMsg = "Invalid/Mismatched Email Entries";
         }
 
@@ -277,28 +286,24 @@ namespace SchoolToHomeBehaviorTracking_Client
         private void ClearMessages()
         {
             invalidEntryMsg.Visibility = System.Windows.Visibility.Collapsed;
-            accessCode.Visibility = System.Windows.Visibility.Collapsed;
+            confirmMsg.Visibility = System.Windows.Visibility.Collapsed;
             validUpdateInfo.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         //clear text boxes
         private void ClearTextBoxes()
         {
-            FirstNameText = "";
-            LastNameText = "";
+            TextBox1Text = null;
+            TextBox2Text = null;
         }
 
         public void RemoveTeacher()
         {
-            ChannelFactory<IWCFService> channelFactory = new
-           ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            if (proxy.RemoveTeacher(FirstNameText, LastNameText))
+            if (proxy.RemoveTeacher(TextBox1Text, TextBox2Text))
             {
-                accessCode.Visibility = System.Windows.Visibility.Visible;
-                AccessCode = "Teacher Removed";
+                confirmMsg.Visibility = System.Windows.Visibility.Visible;
+                ConfirmMessage = "Teacher Removed";
+                _delReloadTabsMethod.DynamicInvoke();
             }
             else
                 invalidEntryMsg.Visibility = System.Windows.Visibility.Visible;

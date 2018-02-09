@@ -5,42 +5,82 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
         mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-        Title="Login" d:DesignHeight="450" d:DesignWidth="600">
+        Title="School-To-Home Behavior Tracking" d:DesignHeight="450" d:DesignWidth="600" 
+        SizeChanged="Window_SizeChanged" Background="#bdf0bc">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#f7f7f7" />
+            <Setter Property="Foreground" Value="#123454"/>
+        </Style>
+        <Style TargetType="PasswordBox">
+            <Setter Property="Background" Value="#f7f7f7" />
+            <Setter Property="Foreground" Value="#123454"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#00699b" />
+            <Setter Property="FontWeight" Value="Heavy" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#f7f7f7" />
+            <Setter Property="Foreground" Value="#123454"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#00699b" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9dd4c5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Border BorderBrush="#00699b" BorderThickness="60">
+        <Border BorderBrush="Black" BorderThickness="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel x:Name="login" Visibility="Collapsed" 
-                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10">
-            <local:Login x:Name="loginUC"></local:Login>
-        </StackPanel>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <StackPanel x:Name="createAccount" Visibility="Collapsed" 
-                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10">
-            <local:CreateAccount x:Name="createAccountUC"></local:CreateAccount>
-        </StackPanel>
-    </Grid>
+                <ScrollViewer x:Name="MyScrollViewer" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="10">
+                    <StackPanel>
+                        <StackPanel x:Name="login" Visibility="Collapsed" >
+                            <local:Login x:Name="loginUC"></local:Login>
+                        </StackPanel>
+
+                        <StackPanel x:Name="createAccount" Visibility="Collapsed" >
+                            <local:CreateAccount x:Name="createAccountUC"></local:CreateAccount>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Border>
 </Window>
 

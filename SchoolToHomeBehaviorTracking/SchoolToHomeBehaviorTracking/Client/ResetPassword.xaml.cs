@@ -18,13 +18,20 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for ResetPassword.xaml
+    /// Forgot password page
     /// </summary>
     public partial class ResetPassword : UserControl
     {
         private string _email;
         private string _code;
+
         private Delegate _delCloseMethod;
         private Delegate _delChangePasswordMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public void CallingCloseMethod(Delegate del)
         {
@@ -39,21 +46,15 @@ namespace SchoolToHomeBehaviorTracking_Client
         public string email
         {
             get { return _email; }
-            set
-            {
-                if (_email != value)
-                    _email = value;
-            }
+            set { _email = value; }
         }
+
         public string code
         {
             get { return _code; }
-            set
-            {
-                if (_code != value)
-                    _code = value;
-            }
+            set { _code = value; }
         }
+
         public ResetPassword()
         {
             DataContext = this;
@@ -62,11 +63,6 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-               ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             proxy.ResetPassword(_email);
             accessCodeVerify.Visibility = System.Windows.Visibility.Visible;
         }
@@ -78,17 +74,10 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if (!proxy.VerifyResetPassword(_email, _code))
                 incorrectAccessCode.Visibility = System.Windows.Visibility.Visible;
             else
-            {
                 _delChangePasswordMethod.DynamicInvoke();
-            }
         }
 
         private void forgotEmailText_TextChanged(object sender, TextChangedEventArgs e)

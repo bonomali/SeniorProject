@@ -1,28 +1,15 @@
-﻿using SchoolToHomeBehaviorTracking_Client;
-using SchoolToHomeBehaviorTracking_Interface;
+﻿using SchoolToHomeBehaviorTracking_Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Windows.Forms.Control;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Forms.xaml
+    /// Teacher forms for tracking
     /// </summary>
     public partial class TeacherForms : INotifyPropertyChanged
     {
@@ -33,23 +20,14 @@ namespace SchoolToHomeBehaviorTracking_Client
         private string _studGradeText;
         private string _completedByNameText;
         private string _dateCompletedText;
-        private string _totalGiven;
-        private string _totalFollowed;
+        private string _gross;
+        private string _net;
         private string _commentsSectionText;
         private string _submitButtonContent;
-        private string _totalInClassAssigned;
-        private string _totalInClassCompleted;
-        private string _totalHomeworkAssigned;
-        private string _totalHomeworkCompleted;
-        private string _totalArguments;
-        private string _argumentativeTimes;
-        private string _totalTalkOutOfTurn;
-        private string _totalInattentive;
-        private string _inattentiveTimes;
+        private string _gross1;
+        private string _net1;
         private string _customBehaviorDescription;
-        private string _totalIncidents;
-        private string _incidentTimes;
-        private string _incdientPeopleInvolved;
+        private string _incidentPeopleInvolved;
         private string _incidentDate;
         private string _incidentTime;
         private string _incidentDescription;
@@ -64,14 +42,18 @@ namespace SchoolToHomeBehaviorTracking_Client
         private string _interventionObservedResults;
         private string _progressReportText;
         private int _behaviorScaleRating;
+
+        private static string ADDFORM = "Add";
+        private static string COMPLETEFORM = "Submit";
+        private static string SEPERATOR = ":?:";
+
         private Delegate _delExitPreviewFormMethod;
         private Delegate _delExitCompleteStudentFormMethod;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public Delegate CallingExitPreviewForm
         {
@@ -82,8 +64,6 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             set { _delExitCompleteStudentFormMethod = value; }
         }
-
-        public IEnumerable<Control> Controls { get; private set; }
 
         public TeacherForms()
         {
@@ -201,10 +181,10 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         public string IncidentPeopleInvolved
         {
-            get { return _incdientPeopleInvolved; }
+            get { return _incidentPeopleInvolved; }
             set
             {
-                _incdientPeopleInvolved = value;
+                _incidentPeopleInvolved = value;
                 OnPropertyChanged();
             }
         }
@@ -239,112 +219,42 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public string TotalIncidents
+        public string Gross
         {
-            get { return _totalIncidents; }
+            get { return _gross; }
             set
             {
-                _totalIncidents = value;
+                _gross = value;
                 OnPropertyChanged();
             }
         }
 
-        public string IncidentTimes
+        public string Net
         {
-            get { return _incidentTimes; }
+            get { return _net; }
             set
             {
-                _incidentTimes = value;
+                _net = value;
                 OnPropertyChanged();
             }
         }
 
-        public string TotalInattentive
+        public string Gross1
         {
-            get { return _totalInattentive; }
+            get { return _gross1; }
             set
             {
-                _totalInattentive = value;
+                _gross1 = value;
                 OnPropertyChanged();
             }
         }
 
-        public string InattentiveTimes
+        public string Net1
         {
-            get { return _inattentiveTimes; }
+            get { return _net1; }
             set
             {
-                _inattentiveTimes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalTalkOutOfTurn
-        {
-            get { return _totalTalkOutOfTurn; }
-            set
-            {
-                _totalTalkOutOfTurn = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalArguments
-        {
-            get { return _totalArguments; }
-            set
-            {
-                _totalArguments = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ArgumentativeTimes
-        {
-            get { return _argumentativeTimes; }
-            set
-            {
-                _argumentativeTimes = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalInClassAssigned
-        {
-            get { return _totalInClassAssigned; }
-            set
-            {
-                _totalInClassAssigned = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalInClassCompleted
-        {
-            get { return _totalInClassCompleted; }
-            set
-            {
-                _totalInClassCompleted = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalHomeworkAssigned
-        {
-            get { return _totalHomeworkAssigned; }
-            set
-            {
-                _totalHomeworkAssigned = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalHomeworkCompleted
-        {
-            get { return _totalHomeworkCompleted; }
-            set
-            {
-                _totalHomeworkCompleted = value;
+                _net1 = value;
                 OnPropertyChanged();
             }
         }
@@ -415,26 +325,6 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
-        public string TotalGiven
-        {
-            get { return _totalGiven; }
-            set
-            {
-                _totalGiven = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string TotalFollowed
-        {
-            get { return _totalFollowed; }
-            set
-            {
-                _totalFollowed = value;
-                OnPropertyChanged();
-            }
-        }
-
         public string CommentsSectionText
         {
             get { return _commentsSectionText; }
@@ -455,19 +345,21 @@ namespace SchoolToHomeBehaviorTracking_Client
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-            ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            if (SubmitButtonContent == "Add")
+            if (SubmitButtonContent == ADDFORM)
             {
                 if (_name != null)
                 {
                     string lname = _name.Split(',')[0];
                     string fname = _name.Split(' ')[1];
+
                     if (proxy.AddFormToStudent(FormName, BehaviorDescription, fname, lname))
                     {
                         MessagePopUp mess = new MessagePopUp("Form successfully added");
@@ -482,7 +374,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 ClearFields();
                 _delExitPreviewFormMethod.DynamicInvoke();
             }
-            else if(SubmitButtonContent == "Submit")
+            else if(SubmitButtonContent == COMPLETEFORM)
             {
                 StudentFormData form = new StudentFormData();
 
@@ -495,6 +387,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                 form.FormName = FormName;
                 form.FormDate = DateCompletedText;
                 form.EndDate = InterventionEndDate;
+                form.BehaviorRating = _behaviorScaleRating;
 
                 if ((bool)sharedCheckBox.IsChecked)
                     form.Shared = true;
@@ -502,58 +395,62 @@ namespace SchoolToHomeBehaviorTracking_Client
                     form.Shared = false;
 
                 //custom behavior form
-                if (customFormName.Visibility == System.Windows.Visibility.Visible)
-                    form.Data = FormName + ":?:" + BehaviorDescription + ":?:" + StudentNameText + ":?:" + StudentGradeText +
-                        ":?:" + TeacherNameText + ":?:" + CompletedByNameText + ":?:" + DateCompletedText + ":?:" +
-                        _behaviorScaleRating + ":?:" + TotalIncidents + ":?:" + IncidentTimes + ":?:" + CommentsSectionText;
+                if (displayCustomForm.Visibility == System.Windows.Visibility.Visible)
+                    form.Data = FormName + SEPERATOR + BehaviorDescription + SEPERATOR + StudentNameText + SEPERATOR + 
+                        StudentGradeText + SEPERATOR + TeacherNameText + SEPERATOR + CompletedByNameText + SEPERATOR 
+                        + DateCompletedText + SEPERATOR + _behaviorScaleRating + SEPERATOR + Gross + SEPERATOR 
+                        + Net + SEPERATOR + CommentsSectionText;
+                
                 //progress report form
                 else if (ProgressReportForm.Visibility == System.Windows.Visibility.Visible)
                 {
                     _behaviorScaleRating = 1;
-                    form.Data = StudentName + ":?:" + DateCompletedText + ":?:" + ProgressReportText + ":?:" + CommentsSectionText;
+                    form.Data = StudentNameText + SEPERATOR + DateCompletedText + SEPERATOR + ProgressReportText + SEPERATOR 
+                        + CommentsSectionText;
                 }
+
                 else
                 {
                     //student information
-                    form.Data = StudentNameText + ":?:" + StudentGradeText +
-                        ":?:" + TeacherNameText + ":?:" + CompletedByNameText + ":?:" + DateCompletedText + ":?:" +
-                        _behaviorScaleRating;
+                    form.Data = StudentNameText + SEPERATOR + StudentGradeText + SEPERATOR + TeacherNameText +
+                        SEPERATOR + CompletedByNameText + SEPERATOR + DateCompletedText + SEPERATOR + _behaviorScaleRating;
 
-                    //follow directions form
-                    if (followDirectionsForm.Visibility == System.Windows.Visibility.Visible)
-                        form.Data += ":?:" + TotalGiven + ":?:" + TotalFollowed + ":?:" + CommentsSectionText;
-                    //completing assignments form
-                    else if (CompletingAssignmentsForm.Visibility == System.Windows.Visibility.Visible)
-                        form.Data += ":?:" + TotalInClassAssigned + ":?:" + TotalInClassCompleted + ":?:" +
-                            TotalHomeworkAssigned + ":?:" + TotalHomeworkCompleted + ":?:" + CommentsSectionText;
-                    //arguing/talking back form
-                    else if (ArguingTalkingBackForm.Visibility == System.Windows.Visibility.Visible)
-                        form.Data += ":?:" + TotalArguments + ":?:" + ArgumentativeTimes + ":?:" + CommentsSectionText;
-                    //talking out of turn form
-                    else if (TalkingOutOfTurnForm.Visibility == System.Windows.Visibility.Visible)
-                        form.Data += ":?:" + TotalTalkOutOfTurn + ":?:" + CommentsSectionText;
-                    //inattentiveness form
-                    else if (InattentivenessForm.Visibility == System.Windows.Visibility.Visible)
-                        form.Data += ":?:" + TotalInattentive + ":?:" + InattentiveTimes + ":?:" + CommentsSectionText;
+                    //completing assignments
+                    if (CompletingAssignmentsForm.Visibility == System.Windows.Visibility.Visible)
+                        form.Data += SEPERATOR + Gross + SEPERATOR + Net + SEPERATOR +
+                            Gross1 + SEPERATOR + Net1 + SEPERATOR + CommentsSectionText;
+                                        
                     //incident form
                     else if (IncidentForm.Visibility == System.Windows.Visibility.Visible)
                     {
                         _behaviorScaleRating = 1;
-                        form.Data += ":?:" + IncidentDate + ":?:" + IncidentTime + ":?:" + IncidentPeopleInvolved + ":?:" +
-                            IncidentDescription + ":?:" + IncidentHandledDescription + ":?:" + CommentsSectionText;
+                        form.Data += SEPERATOR + IncidentDate + SEPERATOR + IncidentTime + SEPERATOR + 
+                            IncidentPeopleInvolved + SEPERATOR + IncidentDescription + SEPERATOR + 
+                            IncidentHandledDescription + SEPERATOR + CommentsSectionText;
                     }
+                    
                     //intervention form
                     else if (InterventionForm.Visibility == System.Windows.Visibility.Visible)
                     {
                         _behaviorScaleRating = 1;
-                        form.Data += ":?:" + InterventionStartDate + ":?:" + InterventionEndDate + ":?:" + InterventionPeopleInvolved
-                            + ":?:" + AddressedIssue + ":?:" + InterventionFreqTime + ":?:" + InterventionDescription + ":?:" +
-                            InterventionObservedResults + ":?:" + InterventionModifications + ":?:" + CommentsSectionText;
+                        form.Data += SEPERATOR + InterventionStartDate + SEPERATOR + InterventionEndDate + SEPERATOR 
+                            + InterventionPeopleInvolved + SEPERATOR + AddressedIssue + SEPERATOR + InterventionFreqTime 
+                            + SEPERATOR + InterventionDescription + SEPERATOR + InterventionObservedResults + SEPERATOR 
+                            + InterventionModifications + SEPERATOR + CommentsSectionText;
                     }
+
+                    //talking out of turn
+                    else if(TalkingOutOfTurnForm.Visibility == System.Windows.Visibility.Visible)
+                        form.Data += SEPERATOR + Gross + SEPERATOR + Net + SEPERATOR + CommentsSectionText;
+
+                    //arguing/talking back, following directions, inattentive forms
+                    else
+                        form.Data += SEPERATOR + Gross + SEPERATOR + Net + SEPERATOR + CommentsSectionText;
                 }
-                if(StudentNameText == null || DateCompletedText == null ||
-                    StudentNameText.Length < 1 || DateCompletedText.Length < 1 || _behaviorScaleRating < 1 ||
-                    !proxy.SaveStudentForm(form))
+
+                //check if form is invalid
+                if (StudentNameText == null || DateCompletedText == null || StudentNameText.Length < 1 || 
+                        DateCompletedText.Length < 1 || _behaviorScaleRating < 1 || !proxy.SaveStudentForm(form))
                 {
                     if (_behaviorScaleRating == 0)
                     {
@@ -631,6 +528,7 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             _behaviorScaleRating = 0;
         }
+
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             ClearFields();
@@ -654,24 +552,15 @@ namespace SchoolToHomeBehaviorTracking_Client
             IncidentDate = null;
             IncidentTime = null;
             BehaviorDescription = null;
-            TotalIncidents = null;
-            IncidentTimes = null;
-            TotalInattentive = null;
-            InattentiveTimes = null;
-            TotalTalkOutOfTurn = null;
-            TotalArguments = null;
-            ArgumentativeTimes = null;
-            TotalInClassAssigned = null;
-            TotalInClassCompleted = null;
-            TotalHomeworkAssigned = null;
-            TotalHomeworkCompleted = null;
             StudentNameText = null;
             StudentGradeText = null;
             TeacherNameText = null;
             CompletedByNameText = null;
             DateCompletedText = null;
-            TotalGiven = null;
-            TotalFollowed = null;
+            Gross = null;
+            Net = null;
+            Gross1 = null;
+            Net1 = null;
             CommentsSectionText = null;
         
             behaviorScale11.IsChecked = true;

@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for PasswordRecovery.xaml
+    /// Parent for resetting and changing password
     /// </summary>
     public partial class PasswordRecovery : Window
     {
@@ -23,18 +13,17 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         public PasswordRecovery()
         {
+            InitializeComponent();
+            this.WindowState = WindowState.Maximized;
+
             System.Delegate delUserCloseControl = new Delegate(CloseWindow);
             System.Delegate delUserChangePasswordControl = new Delegate(ChangePasswordWindow);
 
-            InitializeComponent();
-
             resetPassword.Visibility = System.Windows.Visibility.Visible;
+
             resetPasswordUC.CallingCloseMethod(delUserCloseControl);
             resetPasswordUC.CallingChangePasswordMethod(delUserChangePasswordControl);
             changePasswordUC.CallingCloseMethod(delUserCloseControl);
-
-            InitializeComponent();
-
         }
 
         public void CloseWindow()
@@ -46,7 +35,26 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             resetPassword.Visibility = System.Windows.Visibility.Collapsed;
             changePassword.Visibility = System.Windows.Visibility.Visible;
-            changePasswordUC.ReturnPage = "Cancel";
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= 850)
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
+            if (e.NewSize.Height <= 500)
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
         }
     }
 }

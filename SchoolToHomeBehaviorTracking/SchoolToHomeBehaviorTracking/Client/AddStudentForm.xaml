@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
-                        mc:Ignorable="d" FontSize="12" FontFamily="Lucida Sans Unicode"
-             d:DesignHeight="550" d:DesignWidth="600">
+             mc:Ignorable="d" FontSize="14" FontFamily="Lucida Sans Unicode"
+             d:DesignHeight="550" d:DesignWidth="700" Background="#9dd4c5">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -32,46 +32,47 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Grid.RowSpan="12"
-                      VerticalScrollBarVisibility="Auto" MaxHeight="350">
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                      MaxWidth="600" MaxHeight="400">
             <StackPanel Orientation="Vertical">
                 <StackPanel Margin="5,5,100,5">
-                    <TextBlock Text="Student Information" FontSize="14"/>
+                    <TextBlock Text="Student Information" FontSize="18"/>
                 </StackPanel>
                 <StackPanel  Orientation="Horizontal">
                     <TextBlock x:Name="studFirstName" HorizontalAlignment="Right"
                 Text="First Name: " Margin="5,5"/>
-                    <TextBox x:Name="studFirstNameText" HorizontalAlignment="Left" MinWidth="120" MaxHeight="20" 
+                    <TextBox x:Name="studFirstNameText" HorizontalAlignment="Left" Width="150" 
                      VerticalAlignment="Top" Text="{Binding Path=StudFirstNameText, Mode=TwoWay}"
                      Margin="0,5"/>
 
                     <TextBlock x:Name="studBirthDate" HorizontalAlignment="Right"
-                Text="Birthdate: " Margin="10,5,0,5"/>
-                    <TextBox x:Name="studBirthDateText" HorizontalAlignment="Left" MinWidth="85" MaxHeight="20" 
+                Text="Birthdate: " Margin="5,5,5,5"/>
+                    <TextBox x:Name="studBirthDateText" HorizontalAlignment="Left" Width="85"  
                      VerticalAlignment="Top" Text="{Binding Path=StudBirthDate, Mode=TwoWay}"
-                     Margin="0,5" />
+                     Margin="0,5,10,5" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="studLastName" HorizontalAlignment="Right"
-                 Text="Last Name: " Margin="10,5,0,5"/>
-                    <TextBox x:Name="studLastNameText" HorizontalAlignment="Left" MinWidth="120" MaxHeight="20" 
+                 Text="Last Name: " Margin="12,5,0,5"/>
+                    <TextBox x:Name="studLastNameText" HorizontalAlignment="Left" Width="150" 
                      VerticalAlignment="Top" Text="{Binding Path=StudLastNameText, Mode=TwoWay}"
                     Margin="0,5"/>
 
                     <TextBlock x:Name="studGrade" HorizontalAlignment="Right"
                  Text="Grade: " Margin="30,5,0,5"/>
-                    <TextBox x:Name="studGradeText" HorizontalAlignment="Left" MinWidth="50" MaxHeight="20" 
+                    <TextBox x:Name="studGradeText" HorizontalAlignment="Left" Width="50" 
                      VerticalAlignment="Top" Text="{Binding Path=StudGradeText, Mode=TwoWay}"
                      Margin="0,5"/>
                 </StackPanel>
 
                 <StackPanel Margin="5,20,0,5">
-                    <TextBlock Text="Parent Information" FontSize="14" />
+                    <TextBlock Text="Parent Information" FontSize="18" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="par1Name" HorizontalAlignment="Right"
                 Text="Parent/Guardian 1 Name: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par1NameText" HorizontalAlignment="Left" MinWidth="210" MaxHeight="20" 
+                    <TextBox x:Name="par1NameText" HorizontalAlignment="Left" Width="210"
                      VerticalAlignment="Top" Text="{Binding Path=Par1NameText, Mode=TwoWay}"
                      Margin="0,5"/>
                 </StackPanel>
@@ -79,13 +80,13 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="par1Phone" HorizontalAlignment="Right"
                  Text="Phone: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par1PhoneText" HorizontalAlignment="Left" MinWidth="75" MaxHeight="20" 
+                    <TextBox x:Name="par1PhoneText" HorizontalAlignment="Left" Width="80" 
                      VerticalAlignment="Top" Text="{Binding Path=Par1PhoneText, Mode=TwoWay}"
                      Margin="0,5"/>
 
                     <TextBlock x:Name="par1Address" HorizontalAlignment="Right"
                 Text="Address: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par1AddressText" HorizontalAlignment="Left" MinWidth="185" MaxHeight="20" 
+                    <TextBox x:Name="par1AddressText" HorizontalAlignment="Left" Width="188"
                      VerticalAlignment="Top" Text="{Binding Path=Par1AddressText, Mode=TwoWay}"
                      Margin="0,5"/>
                 </StackPanel>
@@ -93,7 +94,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="par2Name" HorizontalAlignment="Right"
                 Text="Parent/Guardian 2 Name: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par2NameText" HorizontalAlignment="Left" MinWidth="210" MaxHeight="20" 
+                    <TextBox x:Name="par2NameText" HorizontalAlignment="Left" Width="210"  
                      VerticalAlignment="Top" Text="{Binding Path=Par2NameText, Mode=TwoWay}"
                      Margin="0,5"/>
                 </StackPanel>
@@ -101,20 +102,23 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="par2Phone" HorizontalAlignment="Right"
                  Text="Phone: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par2PhoneText" HorizontalAlignment="Left" MinWidth="80" MaxHeight="20" 
+                    <TextBox x:Name="par2PhoneText" HorizontalAlignment="Left" Width="80"  
                      VerticalAlignment="Top" Text="{Binding Path=Par2PhoneText, Mode=TwoWay}"
                      Margin="0,5"/>
 
                     <TextBlock x:Name="par2Address" HorizontalAlignment="Right"
                 Text="Address: " Margin="5,5,0,5"/>
-                    <TextBox x:Name="par2AddressText" HorizontalAlignment="Left" MinWidth="180" MaxHeight="20" 
+                    <TextBox x:Name="par2AddressText" HorizontalAlignment="Left" Width="188"  
                      VerticalAlignment="Top" Text="{Binding Path=Par2AddressText, Mode=TwoWay}"
                      Margin="0,5"/>
                 </StackPanel>
 
-                <Button x:Name="submitButton" Content="Add" 
-                    Margin="-100,30, 10, 30" MaxWidth="80" Click="submitButton_Click"/>
-
+                <StackPanel Orientation="Horizontal" Margin="-30,5">
+                    <Button x:Name="submitButton" Content="Add" 
+                    Margin="150,30, 10, 30" MinWidth="60" Click="submitButton_Click"/>
+                    <Button x:Name="cancelButton" Content="Cancel" 
+                    Margin="10,30, 10, 30" MinWidth="60" Click="cancelButton_Click"/>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

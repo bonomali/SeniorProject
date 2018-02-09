@@ -10,6 +10,7 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Accounts.xaml
+    /// Create a teacher or parent account or add a student to parent account
     /// </summary>
     public partial class Accounts : INotifyPropertyChanged
     {
@@ -17,8 +18,14 @@ namespace SchoolToHomeBehaviorTracking_Client
         private string _tUserName;
         private string _accessCode;
         private string _teacherCode;
+
         private Delegate _delHideCreateAccountMethod;
         private Delegate _delLogoutMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public Delegate HideCreateAccountMethod
         {
@@ -77,18 +84,8 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         public Accounts()
         {
-            ChannelFactory<IWCFService> channelFactory = new
-              ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
-            DataContext = this;
             InitializeComponent();
-
-            if (proxy.ExistingTeacherAccount(Email.EmailAddress))
-                teacher.Visibility = System.Windows.Visibility.Collapsed;
-            if (proxy.ExistingParentAccount(Email.EmailAddress))
-                parent.Visibility = System.Windows.Visibility.Collapsed;
+            DataContext = this;
         }
 
         private void teacher_Checked(object sender, RoutedEventArgs e)
@@ -117,11 +114,6 @@ namespace SchoolToHomeBehaviorTracking_Client
 
         private void sumbitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-               ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             if ((bool)teacher.IsChecked)
             {
                 try
@@ -131,8 +123,8 @@ namespace SchoolToHomeBehaviorTracking_Client
                     {
                         if (proxy.AddTeacherAccount(Email.EmailAddress, code, _tUserName))
                         {
-                            tUserName = "";
-                            accessCode = "";
+                            tUserName = null;
+                            accessCode = null;
                             proxy.UpdateTeacherLastAccess(Email.EmailAddress);
                             TabFocus.Focus = "teacher";
                             _delHideCreateAccountMethod.DynamicInvoke();
@@ -155,10 +147,11 @@ namespace SchoolToHomeBehaviorTracking_Client
                     int code = Convert.ToInt32(_teacherCode);
                     if (proxy.ValidateParentTeacherCode(code))
                     {
-                        if (proxy.AddParentAccount(Email.EmailAddress, _pUserName))
+                        if (proxy.AddParentAccount(Email.EmailAddress, _pUserName) &&
+                            proxy.AddStudentToParentAccount(Email.EmailAddress, code))
                         {
-                            pUserName = "";
-                            teacherCode = "";
+                            pUserName = null;
+                            teacherCode = null;
                             proxy.UpdateParentLastAccess(Email.EmailAddress);
                             TabFocus.Focus = "parent";
                             _delHideCreateAccountMethod.DynamicInvoke();
@@ -183,7 +176,7 @@ namespace SchoolToHomeBehaviorTracking_Client
                     {
                         if (proxy.AddStudentToParentAccount(Email.EmailAddress, code))
                         {
-                            teacherCode = "";
+                            teacherCode = null;
                             _delHideCreateAccountMethod.DynamicInvoke();
                         }
                         else

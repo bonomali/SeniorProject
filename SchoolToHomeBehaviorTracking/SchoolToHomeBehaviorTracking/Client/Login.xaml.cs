@@ -10,12 +10,19 @@ namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for Login.xaml
+    /// Login to application
     /// </summary>
     public partial class Login : UserControl
     {
         private string _email;
+
         private Delegate _delCloseMethod;
         private Delegate _delCreateMethod;
+
+        static ChannelFactory<IWCFService> channelFactory = new
+        ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
+
+        static IWCFService proxy = channelFactory.CreateChannel();
 
         public void CallingCloseMethod(Delegate del)
         {
@@ -30,13 +37,7 @@ namespace SchoolToHomeBehaviorTracking_Client
         public string email
         {
             get { return _email; }
-            set
-            {
-                if (_email != value)
-                {
-                    _email = value;
-                }
-            }
+            set { _email = value; }
         }
       
         public Login()
@@ -48,16 +49,11 @@ namespace SchoolToHomeBehaviorTracking_Client
         //submit button to login to application
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            ChannelFactory<IWCFService> channelFactory = new
-               ChannelFactory<IWCFService>("SchoolToHomeServiceEndpoint");
-
-            IWCFService proxy = channelFactory.CreateChannel();
-
             //check login credentials
             //if valid: go to accounts page, if invalid display error message
             if (proxy.Login(_email, passwordText.Password.ToString()))
             {
-                Email.EmailAddress = _email;
+                Email.EmailAddress = _email; //set static email
                 Dash dashPage = new Dash();
                 dashPage.Show();
                 _delCloseMethod.DynamicInvoke();

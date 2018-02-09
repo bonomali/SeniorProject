@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SchoolToHomeBehaviorTracking_Client
 {
     /// <summary>
     /// Interaction logic for StartScreen.xaml
+    /// Parent for login pages
     /// </summary>
     public partial class StartScreen : Window
     {
@@ -28,12 +18,14 @@ namespace SchoolToHomeBehaviorTracking_Client
             System.Delegate delUserLoginControl = new Delegate(LoginShow);
 
             InitializeComponent();
+            this.WindowState = WindowState.Maximized;
 
-            login.Visibility = System.Windows.Visibility.Visible;
             loginUC.CallingCloseMethod(delUserCloseControl);
             loginUC.CallingCreateMethod(delUserCreateControl);
             createAccountUC.CallingCloseMethod(delUserCloseControl);
             createAccountUC.CallingLoginMethod(delUserLoginControl);
+
+            login.Visibility = System.Windows.Visibility.Visible;
         }
 
         //close window, exit application
@@ -53,6 +45,26 @@ namespace SchoolToHomeBehaviorTracking_Client
         {
             login.Visibility = System.Windows.Visibility.Visible;
             createAccount.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= 850)
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
+            if (e.NewSize.Height <= 500)
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            }
+            else
+            {
+                MyScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            }
         }
     }
 }
