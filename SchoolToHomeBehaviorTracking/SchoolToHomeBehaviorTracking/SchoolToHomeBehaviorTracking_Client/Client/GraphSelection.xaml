@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="SchoolToHomeBehaviorTracking_Client.GraphSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SchoolToHomeBehaviorTracking_Client"
+             mc:Ignorable="d" FontSize="14" FontFamily="Lucida Sans Unicode"
+             d:DesignHeight="400" d:DesignWidth="700">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="175" />
+            <ColumnDefinition Width="175" />
+            <ColumnDefinition Width="175" />
+            <ColumnDefinition Width="175" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="graphSelection" Visibility="Visible" HorizontalAlignment="Center"
+                    Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Grid.RowSpan="3">
+            <StackPanel Orientation="Horizontal" Margin="10,5">
+                <TextBlock Text="{Binding Path=StudentName, Mode=TwoWay}" FontSize="18"/>
+                <TextBlock Text="Start Date (MM/DD/YYYY): "/>
+                <TextBox x:Name="startDate" Width="100" MaxLength="10" Text="{Binding Path=StartDate, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
+                <TextBlock Text="End Date (MM/DD/YYYY): "/>
+                <TextBox x:Name="endDate" Width="100" MaxLength="10" Text="{Binding Path=EndDate, Mode=TwoWay}"/>
+            </StackPanel>
+
+            <TextBlock x:Name="invalidDateFormatMess" Text="Incorrect Date Format" Foreground="IndianRed" 
+                       HorizontalAlignment="Center"  Visibility="Collapsed"/>
+
+            <TextBlock Text="Select Up To 4 Forms To View Graphically" FontSize="18" 
+                       HorizontalAlignment="Center" Margin="0,10,0,10" Foreground="Black"/>
+
+            <TextBlock x:Name="noForms" Text="No Forms" FontSize="18" HorizontalAlignment="Center" Visibility="Hidden"/>
+            <ListView x:Name="formsList" ItemsSource="{Binding Forms}" Background="#afe1c8" SelectionMode="Multiple">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=FormName}" Width="350" />
+                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+        <ScrollViewer x:Name="graphScrollViewer" Visibility="Visible" Height="350" Width="620"
+                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                      Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" Grid.RowSpan="3" Margin="2,0">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="lineGraph1" Visibility="Collapsed" Width="300" >
+                        <local:LineGraph x:Name="lineGraph1UC"></local:LineGraph>
+                    </StackPanel>
+                    <StackPanel x:Name="lineGraph2" Visibility="Collapsed" Width="300">
+                        <local:LineGraph x:Name="lineGraph2UC"></local:LineGraph>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="lineGraph3" Visibility="Collapsed" Width="300">
+                        <local:LineGraph x:Name="lineGraph3UC"></local:LineGraph>
+                    </StackPanel>
+                    <StackPanel x:Name="lineGraph4" Visibility="Collapsed" Width="300">
+                        <local:LineGraph x:Name="lineGraph4UC"></local:LineGraph>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="scatterGraph2" Visibility="Collapsed" Width="600">
+                    <local:ScatterPlotGraph x:Name="scatterGraph2UC"></local:ScatterPlotGraph>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="lineGraph5" Visibility="Collapsed" Width="300">
+                        <local:LineGraph x:Name="lineGraph5UC"></local:LineGraph>
+                    </StackPanel>
+                    <StackPanel x:Name="scatterGraph1" Visibility="Collapsed" Width="300">
+                        <local:ScatterPlotGraph x:Name="scatterGraph1UC"></local:ScatterPlotGraph>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4">
+            <Button x:Name="graphButton" Content="Graph" Width="80" Height="30" Click="graphButton_Click" Margin="5,10"/>
+            <Button x:Name="backButton" Content="Back" Width="80" Height="30" Click="backButton_Click" Margin="5,10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

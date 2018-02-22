@@ -3,7 +3,7 @@ using System.ServiceModel;
 
 namespace SchoolToHomeBehaviorTracking_Interface
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IWCFService1" in both code and config file together.
+    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IWCFService" in both code and config file together.
     [ServiceContract]
     public interface IWCFService
     {
@@ -234,5 +234,17 @@ namespace SchoolToHomeBehaviorTracking_Interface
         //Get form by id for parent viewing
         [OperationContract]
         StudentFormData GetParentViewableFormByID(string formID);
+
+        //Get graphing data for behavior forms for a specified time period
+        [OperationContract]
+        List<List<string>> GetBehaviorGraphingData(string formName, string fname, string lname, string startDate, string endDate);
+
+        //Get graphing data for incident forms for a specified time period
+        [OperationContract]
+        List<List<string>> GetIncidentGraphingData(string fname, string lname, string startDate, string endDate);
+
+        //Get graphing data for home tracking forms for a specified time period
+        [OperationContract]
+        List<List<string>> GetHomeTrackingGraphingData(string fname, string lname, string startDate, string endDate);
     }
 }

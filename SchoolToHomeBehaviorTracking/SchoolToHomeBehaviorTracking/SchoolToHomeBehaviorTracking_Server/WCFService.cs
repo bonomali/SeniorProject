@@ -13,6 +13,7 @@ namespace SchoolToHomeBehaviorTracking_Server
         private static string HOMEFORMS = "Home";
         private static string HOMETRACKINGFORM = "Home Tracking Form";
         private static string PROGRESSREPORTFORM = "Progress Report Form";
+        private static string INCIDENTFORM = "Incident Form";
         private static string OTHERFORMS = "Other";
         private static string CUSTOMFORM = "Custom Behavior Tracking";
         private static string TEMPLATE = "Template";
@@ -27,6 +28,7 @@ namespace SchoolToHomeBehaviorTracking_Server
             {
                 using (test_dbEntities db = new test_dbEntities())
                 {
+                    email = email.ToLower();
                     var user = db.users.First((e) => e.Email == email);
                     if (user.Password == EncryptPassword(password))
                         found = true;
@@ -71,6 +73,7 @@ namespace SchoolToHomeBehaviorTracking_Server
 
             try
             {
+                email = email.ToLower();
                 using (test_dbEntities db = new test_dbEntities())
                 {
                     user newUser = new user();
@@ -1290,6 +1293,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                         targetForm.Data = decrypt.Decrypt(form.FormData);
                         targetForm.StudentFName = student.FirstName;
                         targetForm.StudentLName = student.LastName;
+                        targetForm.FormDescription = GetStudentFormDescription(student.FirstName, student.LastName, form.FormName);
                     }
                 }
             }
@@ -1320,7 +1324,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                         f.EndDate = x.EndDate;
                         f.FormID = x.StudentFormID.ToString();
                         f.Shared = x.Shared;
-
+                        f.FormDescription = GetStudentFormDescription(student.FirstName, student.LastName, x.FormName);   
                         if (x.FormName == HOMETRACKINGFORM)
                         {
                             if (x.Shared)
@@ -1387,7 +1391,7 @@ namespace SchoolToHomeBehaviorTracking_Server
                     targetForm.FormName = form.FormName;
                     targetForm.Shared = form.Shared;
                     targetForm.Data = decrypt.Decrypt(form.FormData);
-
+                    
                     if (targetForm.FormName == HOMETRACKINGFORM && !form.Shared)
                         targetForm = null;
                 }
@@ -1425,6 +1429,144 @@ namespace SchoolToHomeBehaviorTracking_Server
                 return null;
             }
             return targetForm;
+        }
+
+        //Return graphing data for behavior tracking forms for a specified time period
+        public List<List<string>> GetBehaviorGraphingData(string formName, string fname, string lname, string startDate, string endDate)
+        {
+            List<string> dates = new List<string>();
+            List<string> rating = new List<string>();
+            List<string> timeSlept = new List<string>();
+            List<string> formID = new List<string>();
+            List<List<string>> data = new List<List<string>>();
+
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == formName);
+
+                    foreach(var f in forms)
+                    {
+                        DateTime date = Convert.ToDateTime(f.FormDate);
+                        DateTime sDate = Convert.ToDateTime(startDate);
+                        DateTime eDate = Convert.ToDateTime(endDate);
+
+                        if (date.CompareTo(sDate) >= 0 && date.CompareTo(eDate) <= 0 && f.FormData != TEMPLATE)
+                        {
+                            //do not add home tracking form unless shared
+                            if (f.FormName == HOMETRACKINGFORM && !f.Shared) { }
+                            else
+                            {
+                                dates.Add(f.FormDate);
+                                rating.Add(f.BehaviorRating.ToString());
+                                //time calculation here
+                                formID.Add(f.StudentFormID.ToString());
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            data.Add(dates);
+            data.Add(rating);
+            data.Add(timeSlept);
+            data.Add(formID);
+            return data;
+        }
+
+        //Return incident form graphing data
+        public List<List<string>> GetIncidentGraphingData(string fname, string lname, string startDate, string endDate)
+        {
+            List<string> dates = new List<string>();
+            List<string> numIncidents = new List<string>();
+            List<List<string>> data = new List<List<string>>();
+
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    using (test_dbEntities db2 = new test_dbEntities())
+                    {
+                        var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                        var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == INCIDENTFORM);
+                        var forms2 = db2.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == INCIDENTFORM);
+
+                        foreach (var f in forms)
+                        {
+                            DateTime date = Convert.ToDateTime(f.FormDate);
+                            DateTime sDate = Convert.ToDateTime(startDate);
+                            DateTime eDate = Convert.ToDateTime(endDate);
+                            int counter = 0;
+
+                            if (date.CompareTo(sDate) >= 0 && date.CompareTo(eDate) <= 0 && f.FormData != TEMPLATE)
+                            {
+                                foreach (var x in forms2)
+                                {
+                                    if (f.FormDate == x.FormDate)
+                                        counter++;
+                                }
+                                if (!dates.Contains(f.FormDate))
+                                {
+                                    dates.Add(f.FormDate);
+                                    numIncidents.Add(counter.ToString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            data.Add(dates);
+            data.Add(numIncidents);
+            return data;
+        }
+
+        //Get graphing data for home tracking forms for a specified time period
+        public List<List<string>> GetHomeTrackingGraphingData(string fname, string lname, string startDate, string endDate)
+        {
+            List<string> dates = new List<string>();
+            List<string> rating = new List<string>();
+            List<string> timeSlept = new List<string>();
+            List<string> formID = new List<string>();
+            List<List<string>> data = new List<List<string>>();
+
+            try
+            {
+                using (test_dbEntities db = new test_dbEntities())
+                {
+                    var student = db.students.First((s) => s.FirstName == fname && s.LastName == lname);
+                    var forms = db.studentforms.Where((f) => f.StudentID == student.StudentID && f.FormName == HOMETRACKINGFORM);
+
+                    foreach (var f in forms)
+                    {
+                        DateTime date = Convert.ToDateTime(f.FormDate);
+                        DateTime sDate = Convert.ToDateTime(startDate);
+                        DateTime eDate = Convert.ToDateTime(endDate);
+
+                        if (date.CompareTo(sDate) >= 0 && date.CompareTo(eDate) <= 0 && f.FormData != TEMPLATE)
+                        {
+                            dates.Add(f.FormDate);
+                            rating.Add(f.BehaviorRating.ToString());
+                            //time calculation here
+                            formID.Add(f.StudentFormID.ToString());
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            data.Add(dates);
+            data.Add(rating);
+            data.Add(timeSlept);
+            data.Add(formID);
+            return data;
         }
     }
 }
