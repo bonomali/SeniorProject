@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolToHomeBehaviorTrackin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolToHomeBehaviorTracking_Client", "Client\SchoolToHomeBehaviorTracking_Client.csproj", "{B25E08FE-7F49-4C69-B586-45FFA5B81FFB}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SchoolToHomeSetup", "SchoolToHomeSetup\SchoolToHomeSetup.vdproj", "{F4A5711D-E5E6-405F-A179-5646FAB4FAB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{B25E08FE-7F49-4C69-B586-45FFA5B81FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B25E08FE-7F49-4C69-B586-45FFA5B81FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B25E08FE-7F49-4C69-B586-45FFA5B81FFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4A5711D-E5E6-405F-A179-5646FAB4FAB9}.Debug|Any CPU.ActiveCfg = Debug
+		{F4A5711D-E5E6-405F-A179-5646FAB4FAB9}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
