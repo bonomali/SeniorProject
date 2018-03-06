@@ -91,19 +91,19 @@
                 <!--************************************Home Info*****************************-->
                 <StackPanel Visibility="Visible">
                     <StackPanel  Orientation="Horizontal">
-                        <TextBlock HorizontalAlignment="Right" Text="Wake Time (HH:MM)*: " Margin="5,5"/>
-                        <TextBox x:Name="wakeTime" HorizontalAlignment="Left" Width="80"
-                                 Text="{Binding Path=WakeTime, Mode=TwoWay}" Margin="0,5"/>
-                        <ComboBox x:Name="wakeTimePeriod" Height="25" MinWidth="40" Margin="0">
-                            <ComboBoxItem IsSelected="True">AM</ComboBoxItem>
-                            <ComboBoxItem>PM</ComboBoxItem>
-                        </ComboBox>
-                        <TextBlock HorizontalAlignment="Right" Text="Asleep Time (HH:MM)*: " Margin="10,5,0,5"/>
+                        <TextBlock HorizontalAlignment="Right" Text="Asleep Time (HH:MM)*: " Margin="5,5"/>
                         <TextBox x:Name="asleepTime" HorizontalAlignment="Left" Width="80"  
                                  Text="{Binding Path=AsleepTime, Mode=TwoWay}" Margin="0,5"/>
                         <ComboBox x:Name="sleepTimePeriod" Height="25" MinWidth="40" Margin="0">
                             <ComboBoxItem IsSelected="True">PM</ComboBoxItem>
                             <ComboBoxItem>AM</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock HorizontalAlignment="Right" Text="Wake Time (HH:MM)*: " Margin="10,5,0,5"/>
+                        <TextBox x:Name="wakeTime" HorizontalAlignment="Left" Width="80"
+                                 Text="{Binding Path=WakeTime, Mode=TwoWay}" Margin="0,5"/>
+                        <ComboBox x:Name="wakeTimePeriod" Height="25" MinWidth="40" Margin="0">
+                            <ComboBoxItem IsSelected="True">AM</ComboBoxItem>
+                            <ComboBoxItem>PM</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
